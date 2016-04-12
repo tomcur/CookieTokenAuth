@@ -1,0 +1,37 @@
+{
+    "name": "beskhue/cookietokenauth",
+    "description": "Remember CakePHP user authentications with token cookies.",
+    "type": "cakephp-plugin",
+    "keywords": [
+        "cakephp",
+        "remember",
+        "authentication",
+        "cookies"
+    ],
+    "homepage": "https://github.com/Beskhue/CookieTokenAuth",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Beskhue",
+            "homepage": "https://churchman.nl",
+            "role": "Author"
+        },
+        {
+            "name": "Others",
+            "homepage": "https://github.com/Beskhue/CookieTokenAuth/graphs/contributors"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/Beskhue/CookieTokenAuth/issues",
+        "source": "https://github.com/Beskhue/CookieTokenAuth"
+    },
+    "require": {
+        "php": ">=5.4.16",
+        "cakephp/cakephp": "~3.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Beskhue\\CookieTokenAuth\\": "src"
+        }
+    }
+}
