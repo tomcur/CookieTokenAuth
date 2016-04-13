@@ -52,15 +52,15 @@ Next, you probably want to validate user authentication of non-logged in users e
 
 ```
 if(!$this->Auth->user())
-        {
-            $user = $this->Auth->identify();
-			if ($user) 
-            {
-				$this->Auth->setUser($user);
-				$redirectUri = $this->Auth->redirectUrl();
-				return $this->redirect($redirectUri);
-			} 
-        }  
+{
+    $user = $this->Auth->identify();
+    if ($user) 
+    {
+        $this->Auth->setUser($user);
+        $redirectUri = $this->Auth->redirectUrl();
+        return $this->redirect($redirectUri);
+    } 
+}  
 ```
 
 ## Create Token Cookies
