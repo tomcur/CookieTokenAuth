@@ -37,7 +37,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
      */
     public function getUser(Request $request)
     {
-        $this->_getUser();
+        return $this->_getUser();
     }
     
     /**
