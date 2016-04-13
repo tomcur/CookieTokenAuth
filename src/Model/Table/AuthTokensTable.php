@@ -1,5 +1,5 @@
 <?php
-namespace CookieTokenAuth\Model\Table;
+namespace Beskhue\CookieTokenAuth\Model\Table;
 
 use Cake\ORM\Table;
 

@@ -1,5 +1,5 @@
 <?php
-namespace CookieTokenAuth\Controller\Component;
+namespace Beskhue\CookieTokenAuth\Controller\Component;
 
 use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
@@ -27,7 +27,7 @@ class CookieTokenComponent extends Component
     
     public function setCookie($user, $token=null)
     {
-        $authTokens = \Cake\ORM\TableRegistry::get('CookieTokenAuth.AuthTokens');
+        $authTokens = \Cake\ORM\TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens');
         
         $expires = new \DateTime();
         $expires->modify($this->config()['cookie']['expires']);

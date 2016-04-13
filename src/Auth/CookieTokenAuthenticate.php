@@ -1,6 +1,6 @@
 <?php
 
-namespace CookieTokenAuth\Auth;
+namespace Beskhue\CookieTokenAuth\Auth;
 
 use Cake\Auth\BaseAuthenticate;
 use Cake\Controller\ComponentRegistry;
@@ -47,9 +47,9 @@ class CookieTokenAuthenticate extends BaseAuthenticate
      */
     private function _getUser()
     {
-        $cookieTokenComponent = $this->_registry->load('CookieTokenAuth.CookieToken');
+        $cookieTokenComponent = $this->_registry->load('Beskhue/CookieTokenAuth.CookieToken');
         $flashComponent = $this->_registry->load('Flash');
-        $authTokens = \Cake\ORM\TableRegistry::get('CookieTokenAuth.AuthTokens');
+        $authTokens = \Cake\ORM\TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens');
         
         $authTokens->removeExpired();
         
@@ -97,8 +97,8 @@ class CookieTokenAuthenticate extends BaseAuthenticate
      */
     public function logout(\Cake\Event\Event $event, array $user)
     {
-        $cookieTokenComponent = $this->_registry->load('CookieTokenAuth.CookieToken');
-        $authTokens = \Cake\ORM\TableRegistry::get('CookieTokenAuth.AuthTokens');
+        $cookieTokenComponent = $this->_registry->load('Beskhue/CookieTokenAuth.CookieToken');
+        $authTokens = \Cake\ORM\TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens');
         
         // Check if cookie is valid
         if($this->_getUser())
