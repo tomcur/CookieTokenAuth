@@ -57,8 +57,6 @@ if(!$this->Auth->user())
     if ($user) 
     {
         $this->Auth->setUser($user);
-        $redirectUri = $this->Auth->redirectUrl();
-        return $this->redirect($redirectUri);
     } 
 }  
 ```
