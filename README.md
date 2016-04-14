@@ -52,8 +52,7 @@ Next, you probably want to validate user authentication of non-logged in users e
 if(!$this->Auth->user())
 {
     $user = $this->Auth->identify();
-    if ($user) 
-    {
+    if ($user) {
         $this->Auth->setUser($user);
     } 
 }  
@@ -67,15 +66,11 @@ public function login()
 {
     $this->loadComponent('Beskhue/CookieTokenAuth.CookieToken');
 
-    if ($this->request->is('post')) 
-    {
+    if ($this->request->is('post')) {
         $user = $this->Auth->user();
-        if($user)
-        {
+        if ($user) {
             $this->CookieToken->setCookie($user);
-        }
-        else
-        {
+        } else {
             $this->Flash->error(__('Username or password is incorrect.'));
         }
     }
