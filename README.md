@@ -82,5 +82,6 @@ public function login()
 }
 ```
 
-# Limitations
-Currently, the plugin assumes your users are stored in the `Users` models and that the user table in the database is called `users`. It would not be too hard to change the plugin to your application, but a more general solution should be implemented.
+# Limitations and Issues
+- Currently, the plugin assumes your users are stored in the `Users` models and that the user table in the database is called `users`. It would not be too hard to change the plugin to your application, but a more general solution should be implemented.
+- For logged in users cookie tokens are currently sent to the server each request. This gives more opportunity for cookie theft than if the cookie was only sent once (note that this is also the case for naive username/password cookies). This could be fixed by only attempting to authenticate users using the cookie at the start of a session and having a special login page that the cookie is bound to. This might be implemented in a future version.
