@@ -22,8 +22,6 @@ php composer.phar update
 ## Database
 The plugin needs to store data in a database. You can find the database structure dump [here](https://github.com/Beskhue/CookieTokenAuth/blob/master/db.sql).
 
----
-
 # Usage
 ## Bootstrap
 Place the following in your `config/bootstrap.php` file:
@@ -37,7 +35,7 @@ or use bake:
 ```
 
 ## Set Up `AuthComponent`
-Update your AuthComponent configuration to use CookieTokenAuth. For example, if you also use the Form authentication to log users in, your could write:
+Update your AuthComponent configuration to use CookieTokenAuth. For example, if you also use the Form authentication to log users in, you could write:
 ```
 $this->loadComponent('Auth', [
     'authenticate' => [
