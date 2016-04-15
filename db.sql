@@ -21,7 +21,10 @@ CREATE TABLE `auth_tokens` (
 --
 ALTER TABLE `auth_tokens`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `series` (`series`),
+  ADD KEY `token` (`token`),
+  ADD KEY `expires` (`expires`);
 
 --
 -- AUTO_INCREMENT for dumped tables
