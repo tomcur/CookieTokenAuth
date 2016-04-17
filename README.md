@@ -41,7 +41,7 @@ The plugin needs to store data in a database. You can find the database structur
 ## Bootstrap
 Place the following in your `config/bootstrap.php` file:
 ```
-Plugin::load('Beskhue/CookieTokenAuth');
+Plugin::load('Beskhue/CookieTokenAuth', ['routes' => true]);
 ```
 
 or use bake:
