@@ -34,7 +34,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
      */
     public function getUser(Request $request)
     {
-        return $this->_getUser();
+        return $this->getUserFromCookieData();
     }
 
     /**
@@ -42,7 +42,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
      *
      * @return mixed Either false or an array of user information
      */
-    private function _getUser()
+    private function getUserFromCookieData()
     {
         $cookieTokenComponent = $this->_registry->load('Beskhue/CookieTokenAuth.CookieToken');
         $flashComponent = $this->_registry->load('Flash');
@@ -96,7 +96,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
         $authTokens = \Cake\ORM\TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens');
 
         // Check if cookie is valid
-        if ($this->_getUser()) {
+        if ($this->getUserFromCookieData()) {
             // Remove token from database
             $data = $this->getCookieData();
             if ($data) {
