@@ -18,7 +18,7 @@ class CookieTokenComponent extends Component
      * @var array
      */
     protected $_defaultConfig = [
-        'hash' => 'sha256', // The token stored in the database is hashed with the DefaultPasswordHasher
+        'hash' => 'sha256', // Only for generating tokens -- the token stored in the database is hashed with the DefaultPasswordHasher
         'cookie' => [
             'name' => 'userdata',
             'expires' => '+10 weeks',
