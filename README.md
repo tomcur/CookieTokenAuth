@@ -46,7 +46,7 @@ Plugin::load('Beskhue/CookieTokenAuth', ['routes' => true]);
 
 or use bake:
 ```
-"bin/cake" plugin load Beskhue/CookieTokenAuth
+"bin/cake" plugin load --routes Beskhue/CookieTokenAuth
 ```
 
 ## Set Up `AuthComponent`
