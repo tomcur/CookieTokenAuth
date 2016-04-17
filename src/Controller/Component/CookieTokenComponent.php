@@ -6,7 +6,7 @@ use Cake\Controller\Component;
 use Cake\Auth\DefaultPasswordHasher;
 
 /**
- * CookieTokenAuth component.
+ * Cookie token component.
  */
 class CookieTokenComponent extends Component
 {
