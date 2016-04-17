@@ -9,8 +9,6 @@ use Cake\Auth\DefaultPasswordHasher;
 
 class CookieTokenAuthenticate extends BaseAuthenticate
 {
-    public $components = ['Cookie'];
-
     /**
      * Authenticate a user based on the request information.
      *
@@ -21,7 +19,45 @@ class CookieTokenAuthenticate extends BaseAuthenticate
      */
     public function authenticate(Request $request, Response $response)
     {
-        return $this->getUser($request);
+        $redirectComponent = $this->_registry->load('Beskhue/CookieTokenAuth.Redirect');
+        $session = $request->session();
+        
+        $controller = $request->params['controller'];
+        if (!$this->authenticateAttemptedThisSession($request)) {
+            if ($controller == "CookieTokenAuth") {
+                $session->write('CookieTokenAuth.attempted', true);
+                if ($user = $this->getUser($request)) {
+                    return $user;
+                } else {
+                    $redirectComponent->redirectBack();
+                    return false;
+                }
+            } else {
+                $redirectComponent->redirectToAuthenticationPage();
+                return false;
+            }
+        }
+    }
+    
+    /**
+     * Get whether an authentication (on the CookieTokenAuth page) has been 
+     * attempted this session.
+     *
+     * @param \Cake\Network\Request $request Request to get session from.
+     *
+     * @return bool True if an authentication has been attempted this session,
+     *              false otherwise.
+     */
+    public function authenticateAttemptedThisSession(Request $request)
+    {
+        $session = $request->session();
+        return (bool) $session->read('CookieTokenAuth.attempted');
+    }
+    
+    private function setAuthenticateAttemptedThisSession(Request $request)
+    {
+        $session = $request->session();
+        return (bool) $session->read('CookieTokenAuth.attempted');
     }
 
     /**

@@ -4,6 +4,7 @@ namespace Beskhue\CookieTokenAuth\Controller\Component;
 
 use Cake\Controller\Component;
 use Cake\Auth\DefaultPasswordHasher;
+use Cake\Routing\Router;
 
 /**
  * Cookie token component.
@@ -46,6 +47,10 @@ class CookieTokenComponent extends Component
         $token->expires = $expires;
 
         $this->Cookie->config([
+            'path' => Router::url([
+                'plugin' => 'Beskhue/CookieTokenAuth', 
+                'controller' => 'CookieTokenAuth'
+            ]),
             'expires' => $this->config()['cookie']['expires'],
         ]);
         $this->Cookie->write($this->config()['cookie']['name'], [
@@ -63,6 +68,13 @@ class CookieTokenComponent extends Component
 
     public function removeCookie()
     {
-        $this->Cookie->delete($this->config()['cookie']['name']);
+        $this->Cookie->config([
+            'path' => Router::url([
+                'plugin' => 'Beskhue/CookieTokenAuth', 
+                'controller' => 'CookieTokenAuth'
+            ]),
+            'expires' => '-1 day',
+        ]);
+        $this->Cookie->write($this->config()['cookie']['name'], []);
     }
 }
