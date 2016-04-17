@@ -18,6 +18,9 @@ A valid token grants almost as much access as a valid password, and thus it shou
 ### Cookie Exposure Is Minimized
 For added security, the token cookie is only sent to the server on a special authentication page. This page is only accessed once per per session by the client. As such, opportunity for cookie theft is minimized.
 
+### Encrypted by CakePHP
+On top of all these security measures, the token cookies are naturally encrypted by CakePHP.
+
 # Installation
 Place the following in your `composer.json`:
 ```

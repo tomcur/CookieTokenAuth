@@ -49,8 +49,9 @@ class CookieTokenComponent extends Component
         $this->Cookie->config([
             'path' => Router::url([
                 'plugin' => 'Beskhue/CookieTokenAuth', 
-                'controller' => 'CookieTokenAuth'
+                'controller' => 'CookieTokenAuth',
             ]),
+            'encryption' => 'aes',
             'expires' => $this->config()['cookie']['expires'],
         ]);
         $this->Cookie->write($this->config()['cookie']['name'], [
@@ -71,8 +72,9 @@ class CookieTokenComponent extends Component
         $this->Cookie->config([
             'path' => Router::url([
                 'plugin' => 'Beskhue/CookieTokenAuth', 
-                'controller' => 'CookieTokenAuth'
+                'controller' => 'CookieTokenAuth',
             ]),
+            'encryption' => 'aes',
             'expires' => '-1 day',
         ]);
         $this->Cookie->write($this->config()['cookie']['name'], []);
