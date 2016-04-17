@@ -69,6 +69,7 @@ if(!$this->Auth->user())
     $user = $this->Auth->identify();
     if ($user) {
         $this->Auth->setUser($user);
+        return $this->redirect($this->Auth->redirectUrl());
     } 
 }  
 ```
