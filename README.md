@@ -61,7 +61,7 @@ $this->loadComponent('Auth', [
 ```
 
 ## Validate Cookies
-Next, you probably want to validate user authentication of non-logged in users each request. This makes sure that a user with a valid token cookie will be logged in. To do that, place something like the following in your `AppController->beforeFilter`. Note that you will also have to change the current identification you are doing (probably in `UsersController`). See the next section.
+Next, you probably want to validate user authentication of non-logged in users in all controllers (note: authentication is only attempted once per session). This makes sure that a user with a valid token cookie will be logged in. To do that, place something like the following in your `AppController`'s `beforeFilter`. Note that you will also have to change the current identification you are performing (probably in `UsersController`). See the next section.
 
 ```
 if(!$this->Auth->user())
@@ -75,7 +75,7 @@ if(!$this->Auth->user())
 ```
 
 ## Create Token Cookies
-We need to create token cookies when users log in with a conventional method (Form, Ldap, etc). For a Form login, you could do something as follows. This will create a token, add it do the database, and the user will create a cookie.
+When a user logs in with a conventional method (Form, Ldap, etc) we need to create a token cookie. For a Form login, you could do something as follows. This will create a token, add it to the database, and the user's client will receive a cookie.
 
 ```
 public function login()
@@ -94,4 +94,4 @@ public function login()
 ```
 
 # Limitations and Issues
-- Currently, the plugin assumes your users are stored in the `Users` models and that the user table in the database is called `users`. It would not be too hard to adapt the plugin for your application, but a more general solution should be implemented.
+- Currently, the plugin assumes your users are stored in the `Users` model and that the user table in the database is called `users`. It would not be too hard to adapt the plugin for your application, but a more general solution should be implemented.
