@@ -25,7 +25,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
         $controller = $request->params['controller'];
         if (!$this->authenticateAttemptedThisSession($request)) {
             if ($controller == "CookieTokenAuth") {
-                $session->write('CookieTokenAuth.attempted', true);
+                $this->setAuthenticateAttemptedThisSession($request);
                 if ($user = $this->getUser($request)) {
                     return $user;
                 } else {
@@ -54,10 +54,15 @@ class CookieTokenAuthenticate extends BaseAuthenticate
         return (bool) $session->read('CookieTokenAuth.attempted');
     }
     
+    /**
+     * Set the authenticate attempted session flag.
+     *
+     * @param \Cake\Network\Request $request Request to get session from.
+     */
     private function setAuthenticateAttemptedThisSession(Request $request)
     {
         $session = $request->session();
-        return (bool) $session->read('CookieTokenAuth.attempted');
+        $session->write('CookieTokenAuth.attempted', true);
     }
 
     /**
