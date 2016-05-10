@@ -39,7 +39,8 @@ class RedirectComponent extends Component
         
         $this->controller->redirect(Router::url([
             'plugin' => 'Beskhue/CookieTokenAuth', 
-            'controller' => 'CookieTokenAuth'
+            'controller' => 'CookieTokenAuth',
+            '_base' => false
         ]));
     }
     
