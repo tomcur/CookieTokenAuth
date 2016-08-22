@@ -99,7 +99,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
         $series = $data['series'];
         $token = $data['token'];
 
-        $tokenEntity = $authTokens->findBySeries($series)->contain('Users')->first();
+        $tokenEntity = $authTokens->findBySeries($series)->contain($this->_config['userModel'])->first();
         if (!$tokenEntity) {
             // The series was not found. 
             $cookieTokenComponent->removeCookie();
@@ -121,7 +121,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
         // Generate new token
         $cookieTokenComponent->setCookie($user, $tokenEntity);
 
-        return $this->_findUser($user->username);
+        return $this->_findUser($user->{$this->_config['fields']['username']});
     }
 
     /**

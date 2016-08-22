@@ -60,6 +60,20 @@ $this->loadComponent('Auth', [
 ]);
 ```
 
+If the username field is named different in your users table you can overwrite the default config:
+```
+$this->loadComponent('Auth', [
+    'authenticate' => [
+        'Beskhue/CookieTokenAuth.CookieToken' => [
+            'fields' => ['username' => 'email']
+        ],
+        'Form' => [
+            'fields' => ['username' => 'email', 'password' => 'passwd']
+        ],
+    ]
+]);
+```
+
 ## Validate Cookies
 Next, you probably want to validate user authentication of non-logged in users in all controllers (note: authentication is only attempted once per session). This makes sure that a user with a valid token cookie will be logged in. To do that, place something like the following in your `AppController`'s `beforeFilter`. Note that you will also have to change the current identification you are performing (probably in `UsersController`). See the next section.
 
