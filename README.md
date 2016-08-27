@@ -60,15 +60,18 @@ $this->loadComponent('Auth', [
 ]);
 ```
 
-If the username field is named different in your users table you can overwrite the default config:
+If the user model or username field are named differently than the defaults, you can configure the plugin:
+
 ```
 $this->loadComponent('Auth', [
     'authenticate' => [
         'Beskhue/CookieTokenAuth.CookieToken' => [
-            'fields' => ['username' => 'email']
+            'fields' => ['username' => 'email'],
+            'userModel' => 'Members'
         ],
         'Form' => [
-            'fields' => ['username' => 'email', 'password' => 'passwd']
+            'fields' => ['username' => 'email', 'password' => 'passwd'],
+            'userModel' => 'Members'
         ],
     ]
 ]);
@@ -106,6 +109,3 @@ public function login()
     }
 }
 ```
-
-# Limitations and Issues
-- Currently, the plugin assumes your users are stored in the `Users` model and that the user table in the database is called `users`. It would not be too hard to adapt the plugin for your application, but a more general solution should be implemented.
