@@ -73,6 +73,7 @@ class CookieTokenComponent extends Component
             'path' => Router::url([
                 'plugin' => 'Beskhue/CookieTokenAuth', 
                 'controller' => 'CookieTokenAuth',
+                'prefix' => false,
             ]),
             'encryption' => 'aes',
             'expires' => '-1 day',
