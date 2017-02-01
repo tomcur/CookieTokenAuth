@@ -9,8 +9,7 @@ class AuthTokensTable extends Table
     public function initialize(array $config)
     {
         $this->addBehavior('Timestamp');
-
-        $this->belongsTo('Users');
+        $this->belongsTo($config['userModel']);
     }
 
     public function removeExpired()

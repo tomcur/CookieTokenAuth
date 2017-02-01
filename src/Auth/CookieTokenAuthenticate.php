@@ -87,7 +87,9 @@ class CookieTokenAuthenticate extends BaseAuthenticate
     {
         $cookieTokenComponent = $this->_registry->load('Beskhue/CookieTokenAuth.CookieToken');
         $flashComponent = $this->_registry->load('Flash');
-        $authTokens = \Cake\ORM\TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens');
+        $authTokens = \Cake\ORM\TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens', [
+            'userModel' => $this->_config['userModel']
+        ]);
 
         $authTokens->removeExpired();
 
