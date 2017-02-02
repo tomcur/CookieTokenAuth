@@ -25,7 +25,7 @@ On top of all these security measures, the token cookies are naturally encrypted
 Place the following in your `composer.json`:
 ```
 "require": {
-    "beskhue/cookietokenauth": "0.2.0"
+    "beskhue/cookietokenauth": "0.3.0"
 }
 ```
 
