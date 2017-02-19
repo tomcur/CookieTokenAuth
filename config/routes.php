@@ -5,6 +5,6 @@ Router::plugin(
     'Beskhue/CookieTokenAuth',
     ['path' => '/auth'], 
     function ($routes) {
-        $routes->connect('/cookie-token-auth', ['controller' => 'CookieTokenAuth']);
+        $routes->connect('/cookie-token-auth', ['controller' => 'CookieTokenAuth', 'action' => 'index']);
     }
 );
