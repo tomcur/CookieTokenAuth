@@ -25,7 +25,7 @@ On top of all these security measures, the token cookies are naturally encrypted
 Place the following in your `composer.json`:
 ```
 "require": {
-    "beskhue/cookietokenauth": "0.2.0"
+    "beskhue/cookietokenauth": "1.0.0"
 }
 ```
 
@@ -60,13 +60,13 @@ $this->loadComponent('Auth', [
 ]);
 ```
 
-If the user model or username field are named differently than the defaults, you can configure the plugin:
+If the user model or user fields are named differently than the defaults, you can configure the plugin:
 
 ```
 $this->loadComponent('Auth', [
     'authenticate' => [
         'Beskhue/CookieTokenAuth.CookieToken' => [
-            'fields' => ['username' => 'email'],
+            'fields' => ['username' => 'email', 'password' => 'passwd'],
             'userModel' => 'Members'
         ],
         'Form' => [
@@ -78,7 +78,7 @@ $this->loadComponent('Auth', [
 ```
 
 ## Validate Cookies
-Next, you probably want to validate user authentication of non-logged in users in all controllers (note: authentication is only attempted once per session). This makes sure that a user with a valid token cookie will be logged in. To do that, place something like the following in your `AppController`'s `beforeFilter`. Note that you will also have to change the current identification you are performing (probably in `UsersController`). See the next section.
+Next, you probably want to validate user authentication of non-logged in users in all controllers (note: authentication is only attempted once per session). This makes sure that a user with a valid token cookie will be logged in. To do that, place something like the following in your `AppController`'s `beforeFilter`. Note that you might also have to make changes to the current identification method you are performing. See the next section.
 
 ```
 if(!$this->Auth->user())
@@ -92,20 +92,29 @@ if(!$this->Auth->user())
 ```
 
 ## Create Token Cookies
-When a user logs in with a conventional method (Form, Ldap, etc) we need to create a token cookie. For a Form login, you could do something as follows. This will create a token, add it to the database, and the user's client will receive a cookie.
+In most cases, CookieTokenAuth automatically generates token cookies for you. No further configuration and integration would be required.
+
+When a user logs in with a conventional method (Form, Ldap, etc.) we need to create a token cookie such that the user can be identified by CookieTokenAuth when they return. CookieTokenAuth automatically handles identification performed by authentication adapters that are *not* persistent and *not* stateless. This means that from the included authentication adapters in CakePHP only FormAuthenticate will automatically generate a token cookie. The reason for this is that persistent or stateless identification methods identify the user each request, and would lead to the creation of a new cookie token on each request.
+
+If you want to handle persistent or stateless authentication identification as well, you could do something as follows. This will create a token, add it to the database, and the user's client will receive a cookie for the token. You would probably want to make sure the user is identified only once per session.
 
 ```
-public function login()
+public function identify()
 {
     $this->loadComponent('Beskhue/CookieTokenAuth.CookieToken');
 
-    if ($this->request->is('post')) {
-        $user = $this->Auth->user();
-        if ($user) {
-            $this->CookieToken->setCookie($user);
-        } else {
-            $this->Flash->error(__('Username or password is incorrect.'));
-        }
+    $user = $this->Auth->user();
+    if ($user) {
+        $this->CookieToken->setCookie($user);
     }
 }
+```
+
+If the user model or user fields are named differently than the defaults, configure the plugin:
+
+```
+$this->loadComponent('Beskhue/CookieTokenAuth.CookieToken', [
+    'fields' => ['username' => 'email', 'password' => 'passwd'],
+    'userModel' => 'Members'
+]);
 ```
