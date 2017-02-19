@@ -163,6 +163,31 @@ class CookieTokenAuthenticate extends BaseAuthenticate
         // Remove cookie
         $cookieTokenComponent->removeCookie();
     }
+    
+    /**
+     * Called after the user is identified by an authentication adapter.
+     * Sets a cookie token if the user was identified by an adapter other
+     * than this one (i.e. an adapter that is not CookieTokenAuthenticate).
+     * 
+     * @param \Cake\Event\Event           $event The afterIdentify event.
+     * @param array                       $user  The user data.
+     * @param \Cake\Auth\BaseAuthenticate $auth  The authentication object that identified the user.
+     */
+    public function afterIdentify(\Cake\Event\Event $event, array $user, \Cake\Auth\BaseAuthenticate $auth)
+    {
+        if($auth == $this) {
+            // The user was identified through this authenticator. Don't set a cookie as a
+            // new token was already generated and set in $this->getUserFromCookieData.
+            return;
+        }
+        
+        $cookieTokenComponent = $this->_registry->load('Beskhue/CookieTokenAuth.CookieToken', [
+            'fields' => $this->_config['fields'],
+            'userModel' => $this->_config['userModel'],
+        ]);
+        
+        $cookieTokenComponent->setCookie($user);
+    }
 
     /**
      * Get and validate the cookie data.
@@ -199,6 +224,9 @@ class CookieTokenAuthenticate extends BaseAuthenticate
      */
     public function implementedEvents()
     {
-        return ['Auth.logout' => 'logout'];
+        return [
+            'Auth.afterIdentify' => 'afterIdentify',
+            'Auth.logout' => 'logout',
+        ];
     }
 }
