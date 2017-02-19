@@ -31,6 +31,18 @@ class CookieTokenComponent extends Component
         'userModel' => 'Users',
     ];
 
+    /**
+     * Generates a new token cookie.
+     * If $token is not given, generates a new series and token hash,
+     * saves it, and sends the cookie to the user's browser.
+     *
+     * If $token is given, generates a new token hash (but uses the
+     * same series as in $token), extends the expiration date, saves
+     * it, and sends a new cookie to the user's browser.
+     *
+     * @param $user  The user data.
+     * @param $token The token to re-use.
+     */
     public function setCookie($user, $token = null)
     {
         $authTokens = \Cake\ORM\TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens', [
@@ -44,6 +56,7 @@ class CookieTokenComponent extends Component
         $series = hash('sha256', microtime(true).mt_rand());
         $t = hash('sha256', microtime(true).mt_rand());
         $tokenHash = (new DefaultPasswordHasher())->hash($t);
+
 
         if (!$token) {
             $token = $authTokens->newEntity();
@@ -70,11 +83,21 @@ class CookieTokenComponent extends Component
         $authTokens->save($token);
     }
 
+    /**
+     * Remove a token.
+     *
+     * @param $token The token to remove.
+     */
     public function removeToken($token)
     {
         $this->delete($token);
     }
 
+    /**
+     * Remove the token cookie from the user's browser.
+     *
+     * Rewrites the cookie with dummy values and expires the cookie.
+     */
     public function removeCookie()
     {
         $this->Cookie->config([

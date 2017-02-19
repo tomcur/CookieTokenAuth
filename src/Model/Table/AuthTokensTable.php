@@ -12,11 +12,19 @@ class AuthTokensTable extends Table
         $this->belongsTo($config['userModel']);
     }
 
+    /**
+     * Remove expired tokens from the database.
+     */
     public function removeExpired()
     {
         $this->deleteAll(['expires < now()']);
     }
 
+    /**
+     * Delete all tokens belonging to a specific user.
+     *
+     * @param $user The user for whom tokens should be removed.
+     */
     public function deleteAllByUser($user)
     {
         $this->deleteAll(['user_id' => $user->id]);
