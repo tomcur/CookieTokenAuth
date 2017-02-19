@@ -24,12 +24,20 @@ class CookieTokenComponent extends Component
             'name' => 'userdata',
             'expires' => '+10 weeks',
         ],
+        'fields' => [
+            'username' => 'username',
+            'password' => 'password',
+        ],
+        'userModel' => 'Users',
     ];
 
     public function setCookie($user, $token = null)
     {
-        $authTokens = \Cake\ORM\TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens');
-
+        $authTokens = \Cake\ORM\TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens', [
+            'fields' => $this->_config['fields'],
+            'userModel' => $this->_config['userModel'],
+        ]);
+        
         $expires = new \DateTime();
         $expires->modify($this->config()['cookie']['expires']);
 
