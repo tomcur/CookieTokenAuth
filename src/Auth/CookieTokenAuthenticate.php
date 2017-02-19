@@ -136,7 +136,9 @@ class CookieTokenAuthenticate extends BaseAuthenticate
     public function logout(\Cake\Event\Event $event, array $user)
     {
         $cookieTokenComponent = $this->_registry->load('Beskhue/CookieTokenAuth.CookieToken');
-        $authTokens = \Cake\ORM\TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens');
+        $authTokens = \Cake\ORM\TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens', [
+            'userModel' => $this->_config['userModel']
+        ]);
 
         // Check if cookie is valid
         if ($this->getUserFromCookieData()) {
