@@ -27,9 +27,10 @@ class CookieTokenAuthenticate extends BaseAuthenticate
             if ($controller == "CookieTokenAuth") {
                 $this->setAuthenticateAttemptedThisSession($request);
                 if ($user = $this->getUser($request)) {
+                    $redirectComponent->redirectBack($request, $response);
                     return $user;
                 } else {
-                    $redirectComponent->redirectBack();
+                    $redirectComponent->redirectBack($request, $response);
                     return false;
                 }
             } else {
