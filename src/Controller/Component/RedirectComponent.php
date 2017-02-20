@@ -55,7 +55,14 @@ class RedirectComponent extends Component
             $route['?'][$this->query_string_redirect] = $this->request->here(false);
         }
         
-        $this->controller->redirect(Router::url($route));
+        $resp = $this->controller->redirect(Router::url($route));
+        
+        // Send the response and stop further processing. This is in part to prevent
+        // authentication failure flash messages from showing. The page will be
+        // processed as per normal when the user is redirected after the token cookie
+        // has been checked.
+        $resp->send();
+        $resp->stop();
     }
     
     /**
