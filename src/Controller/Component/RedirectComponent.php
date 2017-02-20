@@ -66,7 +66,7 @@ class RedirectComponent extends Component
      * @param \Cake\Network\Request  $request  Request to get authentication information from.
      * @param \Cake\Network\Response $response A response object that can have headers added.
      */
-    public function redirectBack(Request $request, Response $repsponse)
+    public function redirectBack(Request $request, Response $response)
     {
         if (method_exists($request, "getQuery")) {
             $redirectUrl = $request->getQuery($this->query_string_redirect);
