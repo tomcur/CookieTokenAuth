@@ -16,7 +16,7 @@ This method is more secure than storing a username and a token in a cookie. Firs
 A valid token grants almost as much access as a valid password, and thus it should be treated as one. By storing only token hashes in the database, attackers cannot get access to user accounts when the session database is leaked. 
 
 ### Cookie Exposure Is Minimized
-For added security, the token cookie is only sent to the server on a special authentication page. This page is only accessed once per per session by the client. As such, opportunity for cookie theft is minimized.
+For added security, the token cookie is only sent to the server on a special authentication page. This page is only accessed once per per session by the client. As such, opportunity for cookie theft is minimized. This behaviour can be disabled, e.g. to improve site load time for the first visit per session.
 
 ### Encrypted by CakePHP
 On top of all these security measures, the token cookies are naturally encrypted by CakePHP.
@@ -76,6 +76,28 @@ $this->loadComponent('Auth', [
     ]
 ]);
 ```
+
+### Configuration 
+
+The full default configuration is as follows:
+
+```
+'fields' => [
+    'username' => 'username',
+    'password' => 'password',
+],
+'userModel' => 'Users',
+'hash' => 'sha256',
+'cookie' => [
+    'name' => 'userdata',
+    'expires' => '+10 weeks',
+],
+'minimizeCookieExposure' => true,
+```
+
+Note that `hash` is used only for generating tokens -- the token stored in the database is hashed with the `DefaultPasswordHasher`. Its value can be any [PHP hash algorithm](https://php.net/manual/en/function.hash-algos.php).
+
+If `minimizeCookieExposure` is set to `false`, the client will not be redirected twice at the start of a session to attempt to log them in using a token cookie. Instead, the token cookie is now sent by the client's browser on each request. This is less secure.
 
 ## Validate Cookies
 Next, you probably want to validate user authentication of non-logged in users in all controllers (note: authentication is only attempted once per session). This makes sure that a user with a valid token cookie will be logged in. To do that, place something like the following in your `AppController`'s `beforeFilter`. Note that you might also have to make changes to the current identification method you are performing. See the next section.
