@@ -95,7 +95,7 @@ The full default configuration is as follows:
 'minimizeCookieExposure' => true,
 ```
 
-Note that `hash` is used only for generating tokens -- the token stored in the database is hashed with the `DefaultPasswordHasher`. Its value can be any [PHP hash algorithm](https://php.net/manual/en/function.hash-algos.php).
+Note that `hash` is used only for generating tokens -- the token stored in the database is hashed with the DefaultPasswordHasher. Its value can be any [PHP hash algorithm](https://php.net/manual/en/function.hash-algos.php).
 
 If `minimizeCookieExposure` is set to `false`, the client will not be redirected twice at the start of a session to attempt to log them in using a token cookie. Instead, the token cookie is now sent by the client's browser on each request. This is less secure.
 
@@ -123,7 +123,14 @@ If you want to handle persistent or stateless authentication identification as w
 ```
 public function identify()
 {
-    $this->loadComponent('Beskhue/CookieTokenAuth.CookieToken');
+    $this->loadComponent('Beskhue/CookieTokenAuth.CookieToken', [
+        'hash' => 'sha256',
+        'cookie' => [
+            'name' => 'userdata',
+            'expires' => '+10 weeks',
+        ],
+        'minimizeCookieExposure' => true,
+    ]);
 
     $user = $this->Auth->user();
     if ($user) {
@@ -132,11 +139,4 @@ public function identify()
 }
 ```
 
-If the user model or user fields are named differently than the defaults, configure the plugin:
-
-```
-$this->loadComponent('Beskhue/CookieTokenAuth.CookieToken', [
-    'fields' => ['username' => 'email', 'password' => 'passwd'],
-    'userModel' => 'Members'
-]);
-```
+Configure the `hash`, `cookie` and `minimizeCookieExposure` the same as for the authentication component of the plugin.
