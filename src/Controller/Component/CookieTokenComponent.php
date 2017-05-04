@@ -32,8 +32,8 @@ class CookieTokenComponent extends Component
         $expires = new \DateTime();
         $expires->modify($this->config()['cookie']['expires']);
 
-        $series = hash('sha256', microtime(true).mt_rand());
-        $t = hash('sha256', microtime(true).mt_rand());
+        $series = hash($this->_config['hash'], microtime(true).mt_rand());
+        $t = hash($this->_config['hash'], microtime(true).mt_rand());
         $tokenHash = (new DefaultPasswordHasher())->hash($t);
 
 
