@@ -46,7 +46,6 @@ class CookieTokenAuthenticate extends BaseAuthenticate
                 // We are minimizing token cookie exposure; redirect the user (once, at the start
                 // of a session, to attempt to log them in using a token cookie).
                 $redirectComponent = $this->_registry->load('Beskhue/CookieTokenAuth.Redirect');
-                $session = $request->session();
                 
                 $controller = $request->params['controller'];
                 if (!$this->authenticateAttemptedThisSession($request)) {
