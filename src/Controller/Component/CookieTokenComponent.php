@@ -14,24 +14,6 @@ class CookieTokenComponent extends Component
     public $components = ['Cookie'];
 
     /**
-     * Default configuration.
-     *
-     * @var array
-     */
-    protected $_defaultConfig = [
-        'hash' => 'sha256', // Only for generating tokens -- the token stored in the database is hashed with the DefaultPasswordHasher
-        'cookie' => [
-            'name' => 'userdata',
-            'expires' => '+10 weeks',
-        ],
-        'fields' => [
-            'username' => 'username',
-            'password' => 'password',
-        ],
-        'userModel' => 'Users',
-    ];
-
-    /**
      * Generates a new token cookie.
      * If $token is not given, generates a new series and token hash,
      * saves it, and sends the cookie to the user's browser.
@@ -45,10 +27,7 @@ class CookieTokenComponent extends Component
      */
     public function setCookie($user, $token = null)
     {
-        $authTokens = \Cake\ORM\TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens', [
-            'fields' => $this->_config['fields'],
-            'userModel' => $this->_config['userModel'],
-        ]);
+        $authTokens = \Cake\ORM\TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens', $this->_config);
         
         $expires = new \DateTime();
         $expires->modify($this->config()['cookie']['expires']);
