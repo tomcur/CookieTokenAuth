@@ -46,11 +46,20 @@ class CookieTokenComponent extends Component
         $token->token = $tokenHash;
         $token->expires = $expires;
 
-        $this->Cookie->config([
-            'path' => Router::url([
+        if ($this->_config['minimizeCookieExposure']) {
+            // We are minimizing token cookie exposure, so tell the browser to only send the token cookie
+            // on the token cookie authentication page
+            $path = Router::url([
                 'plugin' => 'Beskhue/CookieTokenAuth', 
                 'controller' => 'CookieTokenAuth',
-            ]),
+            ]);   
+        } else { 
+            // We are not minimizing token cookie exposure, tell the browser to always send the token cookie
+            $path = '/';
+        }
+        
+        $this->Cookie->config([
+            'path' => $path,
             'encryption' => 'aes',
             'expires' => $this->config()['cookie']['expires'],
         ]);

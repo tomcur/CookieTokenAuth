@@ -24,6 +24,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
                 'name' => 'userdata',
                 'expires' => '+10 weeks',
             ],
+            'minimizeCookieExposure' => true,
         ]);
         
         parent::__construct($registry, $config);
@@ -39,23 +40,40 @@ class CookieTokenAuthenticate extends BaseAuthenticate
      */
     public function authenticate(Request $request, Response $response)
     {
-        $redirectComponent = $this->_registry->load('Beskhue/CookieTokenAuth.Redirect');
-        $session = $request->session();
-        
-        $controller = $request->params['controller'];
+        // Only attempt to authenticate once per session
         if (!$this->authenticateAttemptedThisSession($request)) {
-            if ($controller == "CookieTokenAuth") {
-                $this->setAuthenticateAttemptedThisSession($request);
-                if ($user = $this->getUser($request)) {
-                    $redirectComponent->redirectBack($request, $response);
-                    return $user;
-                } else {
-                    $redirectComponent->redirectBack($request, $response);
-                    return false;
+            if ($this->_config['minimizeCookieExposure']) {
+                // We are minimizing token cookie exposure; redirect the user (once, at the start
+                // of a session, to attempt to log them in using a token cookie).
+                $redirectComponent = $this->_registry->load('Beskhue/CookieTokenAuth.Redirect');
+                $session = $request->session();
+                
+                $controller = $request->params['controller'];
+                if (!$this->authenticateAttemptedThisSession($request)) {
+                    if ($controller == "CookieTokenAuth") {
+                        $this->setAuthenticateAttemptedThisSession($request);
+                        if ($user = $this->getUser($request)) {
+                            $redirectComponent->redirectBack($request, $response);
+                            return $user;
+                        } else {
+                            $redirectComponent->redirectBack($request, $response);
+                            return false;
+                        }
+                    } else {
+                        // We are attempting to authenticate using the token cookie, but are not 
+                        // on the authentication page. Redirect the user.
+                        $redirectComponent->redirectToAuthenticationPage();
+                        return false;
+                    }
                 }
             } else {
-                $redirectComponent->redirectToAuthenticationPage();
-                return false;
+                // We are not minimizing token cookie exposure; just attempt to authenticate the user.
+                $this->setAuthenticateAttemptedThisSession($request);
+                if ($user = $this->getUser($request)) {
+                    return $user;
+                } else {
+                    return false;
+                }
             }
         }
     }
