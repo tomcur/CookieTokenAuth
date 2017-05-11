@@ -14,7 +14,7 @@ class CreateAuthTokens extends AbstractMigration
      */
     public function change()
     {
-        $table = $this->table('AuthTokens');
+        $table = $this->table('auth_tokens');
 
         $table->addColumn('token', 'string', [
             'null' => false
