@@ -3,8 +3,8 @@
 namespace Beskhue\CookieTokenAuth\Auth;
 
 use Cake\Auth\BaseAuthenticate;
-use Cake\Network\Request;
-use Cake\Network\Response;
+use Cake\Http\Response;
+use Cake\Http\ServerRequest;
 use Cake\Auth\DefaultPasswordHasher;
 
 class CookieTokenAuthenticate extends BaseAuthenticate
@@ -29,16 +29,16 @@ class CookieTokenAuthenticate extends BaseAuthenticate
         
         parent::__construct($registry, $config);
     }
-    
+
     /**
      * Authenticate a user based on the request information.
      *
-     * @param \Cake\Network\Request  $request  Request to get authentication information from.
-     * @param \Cake\Network\Response $response A response object that can have headers added.
+     * @param ServerRequest  $request  Request to get authentication information from.
+     * @param Response $response A response object that can have headers added.
      *
      * @return mixed Either false on failure, or an array of user data on success.
      */
-    public function authenticate(Request $request, Response $response)
+    public function authenticate(ServerRequest $request, Response $response)
     {
         // Only attempt to authenticate once per session
         if (!$this->authenticateAttemptedThisSession($request)) {
@@ -81,12 +81,12 @@ class CookieTokenAuthenticate extends BaseAuthenticate
      * Get whether an authentication (on the CookieTokenAuth page) has been 
      * attempted this session.
      *
-     * @param \Cake\Network\Request $request Request to get session from.
+     * @param ServerRequest $request Request to get session from.
      *
      * @return bool True if an authentication has been attempted this session,
      *              false otherwise.
      */
-    public function authenticateAttemptedThisSession(Request $request)
+    public function authenticateAttemptedThisSession(ServerRequest $request)
     {
         $session = $request->session();
         return (bool) $session->read('CookieTokenAuth.attempted');
@@ -95,9 +95,9 @@ class CookieTokenAuthenticate extends BaseAuthenticate
     /**
      * Set the authenticate attempted session flag.
      *
-     * @param \Cake\Network\Request $request Request to get session from.
+     * @param ServerRequest $request Request to get session from.
      */
-    private function setAuthenticateAttemptedThisSession(Request $request)
+    private function setAuthenticateAttemptedThisSession(ServerRequest $request)
     {
         $session = $request->session();
         $session->write('CookieTokenAuth.attempted', true);
@@ -107,11 +107,11 @@ class CookieTokenAuthenticate extends BaseAuthenticate
      * Get a user based on information in the request. Primarily used by stateless authentication
      * systems like basic and digest auth.
      *
-     * @param \Cake\Network\Request $request Request object.
+     * @param ServerRequest $request Request object.
      *
      * @return mixed Either false or an array of user information
      */
-    public function getUser(Request $request)
+    public function getUser(ServerRequest $request)
     {
         return $this->getUserFromCookieData();
     }
