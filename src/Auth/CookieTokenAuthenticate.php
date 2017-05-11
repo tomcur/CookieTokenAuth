@@ -49,7 +49,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
                 
                 $controller = $request->params['controller'];
                 if (!$this->authenticateAttemptedThisSession($request)) {
-                    if ($controller == "CookieTokenAuth") {
+                    if ($controller === 'CookieTokenAuth') {
                         $this->setAuthenticateAttemptedThisSession($request);
                         if ($user = $this->getUser($request)) {
                             $redirectComponent->redirectBack($request, $response);
@@ -201,7 +201,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
      */
     public function afterIdentify(\Cake\Event\Event $event, array $user, \Cake\Auth\BaseAuthenticate $auth)
     {
-        if($auth == $this) {
+        if($auth === $this) {
             // The user was identified through this authenticator. Don't set a cookie as a
             // new token was already generated and set in $this->getUserFromCookieData.
             return;
