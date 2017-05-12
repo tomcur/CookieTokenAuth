@@ -93,6 +93,7 @@ The full default configuration is as follows:
     'expires' => '+10 weeks',
 ],
 'minimizeCookieExposure' => true,
+'tokenError' => __('A session token mismatch was detected. You have been logged out.'),
 ```
 
 Note that `hash` is used only for generating tokens -- the token stored in the database is hashed with the DefaultPasswordHasher. Its value can be any [PHP hash algorithm](https://php.net/manual/en/function.hash-algos.php).
