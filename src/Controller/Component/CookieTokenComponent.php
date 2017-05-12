@@ -30,7 +30,7 @@ class CookieTokenComponent extends Component
         $authTokens = \Cake\ORM\TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens', $this->_config);
         
         $expires = new \DateTime();
-        $expires->modify($this->config()['cookie']['expires']);
+        $expires->modify($this->getConfig()['cookie']['expires']);
 
         $series = hash($this->_config['hash'], microtime(true).mt_rand());
         $t = hash($this->_config['hash'], microtime(true).mt_rand());
@@ -61,9 +61,9 @@ class CookieTokenComponent extends Component
         $this->Cookie->config([
             'path' => $path,
             'encryption' => 'aes',
-            'expires' => $this->config()['cookie']['expires'],
+            'expires' => $this->getConfig()['cookie']['expires'],
         ]);
-        $this->Cookie->write($this->config()['cookie']['name'], [
+        $this->Cookie->write($this->getConfig()['cookie']['name'], [
             'series' => $token->series,
             'token' => $t,
         ]);
@@ -97,6 +97,6 @@ class CookieTokenComponent extends Component
             'encryption' => 'aes',
             'expires' => '-1 day',
         ]);
-        $this->Cookie->write($this->config()['cookie']['name'], []);
+        $this->Cookie->write($this->getConfig()['cookie']['name'], []);
     }
 }

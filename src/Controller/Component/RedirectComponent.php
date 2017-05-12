@@ -30,7 +30,7 @@ class RedirectComponent extends Component
         if (defined("\Cake\Controller\Component\AuthComponent::QUERY_STRING_REDIRECT")) {
             $this->query_string_redirect = \Cake\Controller\Component\AuthComponent::QUERY_STRING_REDIRECT;
         } else {
-            $this->query_string_redirect = "redirect";
+            $this->query_string_redirect = 'redirect';
         }
     }
 
@@ -52,7 +52,7 @@ class RedirectComponent extends Component
         if ($url) {
             $route['?'][$this->query_string_redirect] = $url;
         } else {
-            $route['?'][$this->query_string_redirect] = $this->request->here(false);
+            $route['?'][$this->query_string_redirect] = Component::getController()->request->here(false);
         }
         
         $resp = $this->controller->redirect(Router::url($route));
@@ -75,7 +75,7 @@ class RedirectComponent extends Component
      */
     public function redirectBack(Request $request, Response $response)
     {
-        if (method_exists($request, "getQuery")) {
+        if (method_exists($request, 'getQuery')) {
             $redirectUrl = $request->getQuery($this->query_string_redirect);
         } else {
             $redirectUrl = $request->query[$this->query_string_redirect];
