@@ -25,6 +25,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
                 'expires' => '+10 weeks',
             ],
             'minimizeCookieExposure' => true,
+            'tokenError' => __('A session token mismatch was detected. You have been logged out.')
         ]);
         
         parent::__construct($registry, $config);
@@ -149,7 +150,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
 
         if (!(new DefaultPasswordHasher())->check($token, $tokenEntity->token)) {
             // Tokens don't match. Probably attempted theft!
-            $flashComponent->error('A session token mismatch was detected. You have been logged out.');
+            $flashComponent->error($this->getConfig('tokenError'), ['key' => 'auth']);
             $authTokens->deleteAllByUser($user);
             $cookieTokenComponent->removeCookie();
 
