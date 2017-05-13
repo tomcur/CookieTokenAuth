@@ -41,6 +41,9 @@ Setup the plugin database using [the official migrations plugin for CakePHP](htt
 cake migrations migrate -p Beskhue/CookieTokenAuth
 ```
 
+If you have a specific need; model, table name, uuid primary key, you can copy into your app folder the migration file located at `config/Migrations/20170510221552_CreateAuthTokens.php`
+and edit the end of the migration.
+
 # Usage
 ## Bootstrap
 Place the following in your `config/bootstrap.php` file:

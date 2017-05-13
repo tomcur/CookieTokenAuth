@@ -38,8 +38,11 @@ class CreateAuthTokens extends AbstractMigration
         ]);
         $table->addIndex(['expires'], ['unique' => false, 'name' => 'id_auth_tokens_expires']);
 
+        /**
+         * Edit this part if it doesn't fit to your database.
+         */
         $table
-            ->addColumn('user_id', 'uuid', [
+            ->addColumn('user_id', 'integer', [
                 'null' => false,
             ])
             ->addForeignKey('user_id', 'Users', 'id',
