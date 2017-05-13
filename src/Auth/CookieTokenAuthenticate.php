@@ -76,6 +76,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
                 }
             }
         }
+        return false;
     }
     
     /**
@@ -167,8 +168,8 @@ class CookieTokenAuthenticate extends BaseAuthenticate
      * Called when the user logs out. Remove the token from the database and 
      * delete the cookie.
      * 
-     * @param \Cake\Event\Event $event The logout event.
-     * @param array             $user  The user data.
+     * @param Event $event The logout event.
+     * @param array $user  The user data.
      */
     public function logout(\Cake\Event\Event $event, array $user)
     {
