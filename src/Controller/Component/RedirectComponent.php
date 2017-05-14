@@ -9,13 +9,31 @@ use Cake\Network\Response;
 
 /**
  * Redirect component.
+ *
+ * @property string query_string_redirect
+ * @property  controller
  */
 class RedirectComponent extends Component
 {
     
     
     public $components = ['Auth'];
-    
+
+    /**
+     * The controller that this collection was initialized with.
+     *
+     * @var \Cake\Controller\Controller
+     */
+    private $controller;
+
+    /**
+     * The query string key used for remembering
+     * the referred page when getting redirected to login.
+     *
+     * @var string
+     */
+    private $query_string_redirect = 'redirect';
+
     /**
      * Initialize properties.
      *
@@ -25,20 +43,18 @@ class RedirectComponent extends Component
     public function initialize(array $config)
     {
         $this->controller = $this->_registry->getController();
-        
-        // The query string key used for remembering the referrered page when getting redirected to login.
+
         if (defined("\Cake\Controller\Component\AuthComponent::QUERY_STRING_REDIRECT")) {
-            $this->query_string_redirect = \Cake\Controller\Component\AuthComponent::QUERY_STRING_REDIRECT;
-        } else {
-            $this->query_string_redirect = 'redirect';
+            $this->query_string_redirect = AuthComponent::QUERY_STRING_REDIRECT;
         }
     }
 
     /**
-     * Redirect the client to the cookie authentication page. 
+     * Redirect the client to the cookie authentication page.
      * If a url is given, set Auth to return to that url after authentication.
      *
      * @param string $url The url to return the client to after authentication.
+     * @throws \Cake\Core\Exception\Exception
      */
     public function redirectToAuthenticationPage($url = null)
     {           
