@@ -52,7 +52,7 @@ class RedirectComponent extends Component
         if ($url) {
             $route['?'][$this->query_string_redirect] = $url;
         } else {
-            $route['?'][$this->query_string_redirect] = Component::getController()->request->here(false);
+            $route['?'][$this->query_string_redirect] = Component::getController()->request->getRequestTarget();
         }
         
         $resp = $this->controller->redirect(Router::url($route));
