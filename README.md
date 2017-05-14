@@ -128,7 +128,10 @@ public function identify()
 {
     $user = $this->Auth->user();
     if ($user) {
-        $this->loadComponent('Beskhue/CookieTokenAuth.CookieToken',$this->Auth->getConfig('authenticate')['Beskhue/CookieTokenAuth.CookieToken']);
+        $this->loadComponent(
+            'Beskhue/CookieTokenAuth.CookieToken',
+            $this->Auth->getConfig('authenticate')['Beskhue/CookieTokenAuth.CookieToken']
+        );
         $this->CookieToken->setCookie($user);
     }
 }
@@ -143,18 +146,18 @@ After that, you could do something like that in your login's action.
 ```
 public function login()
 {
-    $this->loadComponent('Beskhue/CookieTokenAuth.CookieToken', [
-        'hash' => 'sha256',
-        'cookie' => [
-            'name' => 'userdata',
-            'expires' => '+10 weeks',
-        ],
-        'minimizeCookieExposure' => true,
-    ]);
-
+    // ...
     $user = $this->Auth->user();
-    if ($user) {
-        $this->CookieToken->setCookie($user);
+    if($user) {
+         $this->Auth->setUser($user);
+         
+         if($this->request->getData('remember_me')) {
+            $this->loadComponent(
+                'Beskhue/CookieTokenAuth.CookieToken',
+                $this->Auth->getConfig('authenticate')['Beskhue/CookieTokenAuth.CookieToken']
+            );
+            $this->CookieToken->setCookie($user);
+         }
     }
 }
 ```
