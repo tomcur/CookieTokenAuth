@@ -11,6 +11,25 @@ class CookieTokenAuthenticate extends BaseAuthenticate
 {
     
     /**
+     * This authenticate class can listen to following events fired by AuthComponent:
+     *
+     * - `Auth.afterIdentify` - Fired after a user has been identified using one of
+     *   configured authenticate class. The callback function should have signature
+     *   like `afterIdentify(Event $event, array $user)` when `$user` is the
+     *   identified user record.
+     *
+     * - `Auth.logout` - Fired when AuthComponent::logout() is called. The callback
+     *   function should have signature like `logout(Event $event, array $user)`
+     *   where `$user` is the user about to be logged out.
+     *
+     * @var array List of events this class listens to. Defaults this class listens
+     *            - `Auth.logout` - The callback remove the CookieToken if set.
+     */
+    protected $_implementedEvents = [
+        'Auth.logout' => 'logout',
+    ];
+
+    /**
      * Constructor
      *
      * @param \Cake\Controller\ComponentRegistry $registry The Component registry used on this request.
@@ -25,16 +44,25 @@ class CookieTokenAuthenticate extends BaseAuthenticate
                 'expires' => '+10 weeks',
             ],
             'minimizeCookieExposure' => true,
+            /**
+             * Sometimes the CookieToken should not be set afterIdentify.
+             * e.g. : the 'Remember me' use case.
+             */
+            'setCookieAfterIdentify' => true,
             'tokenError' => __('A session token mismatch was detected. You have been logged out.')
         ]);
-        
+
         parent::__construct($registry, $config);
+
+        if ($this->getConfig('setCookieAfterIdentify')) {
+            $this->_implementedEvents['Auth.afterIdentify'] = 'afterIdentify';
+        }
     }
 
     /**
      * Authenticate a user based on the request information.
      *
-     * @param ServerRequest  $request  Request to get authentication information from.
+     * @param ServerRequest $request Request to get authentication information from.
      * @param Response $response A response object that can have headers added.
      *
      * @return mixed Either false on failure, or an array of user data on success.
@@ -201,7 +229,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
      * @param array                       $user  The user data.
      * @param \Cake\Auth\BaseAuthenticate $auth  The authentication object that identified the user.
      */
-    public function afterIdentify(\Cake\Event\Event $event, array $user, \Cake\Auth\BaseAuthenticate $auth)
+    public function afterIdentify(Event $event, array $user, BaseAuthenticate $auth)
     {
         if($auth === $this) {
             // The user was identified through this authenticator. Don't set a cookie as a
@@ -234,24 +262,12 @@ class CookieTokenAuthenticate extends BaseAuthenticate
     /**
      * Returns a list of all events that this authenticate class will listen to.
      *
-     * An authenticate class can listen to following events fired by AuthComponent:
+     * @see self::$_implementedEvents
      *
-     * - `Auth.afterIdentify` - Fired after a user has been identified using one of
-     *   configured authenticate class. The callback function should have signature
-     *   like `afterIdentify(Event $event, array $user)` when `$user` is the
-     *   identified user record.
-     *
-     * - `Auth.logout` - Fired when AuthComponent::logout() is called. The callback
-     *   function should have signature like `logout(Event $event, array $user)`
-     *   where `$user` is the user about to be logged out.
-     *
-     * @return array List of events this class listens to. Defaults to `[]`.
+     * @return array  List of events this class listens to.
      */
     public function implementedEvents()
     {
-        return [
-            'Auth.afterIdentify' => 'afterIdentify',
-            'Auth.logout' => 'logout',
-        ];
+        return $this->_implementedEvents;
     }
 }
