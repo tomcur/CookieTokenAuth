@@ -35,7 +35,14 @@ php composer.phar update
 ```
 
 ## Database
-The plugin needs to store data in a database. You can find the database structure dump [here](https://github.com/Beskhue/CookieTokenAuth/blob/master/db.sql).
+Setup the plugin database using [the official migrations plugin for CakePHP](https://github.com/cakephp/migrations).
+
+```
+cake migrations migrate -p Beskhue/CookieTokenAuth
+```
+
+If you have a specific need; model, table name, uuid primary key, you can copy into your app folder the migration file located at `config/Migrations/20170510221552_CreateAuthTokens.php`
+and edit the end of the migration.
 
 # Usage
 ## Bootstrap

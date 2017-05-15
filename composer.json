@@ -27,7 +27,8 @@
     },
     "require": {
         "php": ">=5.4.16",
-        "cakephp/cakephp": "~3.2"
+        "cakephp/cakephp": "~3.2",
+        "cakephp/migrations": "@stable"
     },
     "autoload": {
         "psr-4": {
