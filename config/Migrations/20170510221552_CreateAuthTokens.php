@@ -16,15 +16,21 @@ class CreateAuthTokens extends AbstractMigration
     {
         $table = $this->table('auth_tokens');
 
-        $table->addColumn('token', 'string', [
-            'null' => false
-        ]);
-        $table->addIndex(['token'], ['unique' => true, 'name' => 'id_auth_tokens_token']);
-
         $table->addColumn('series', 'string', [
             'null' => false
         ]);
-        $table->addIndex(['series'], ['unique' => false, 'name' => 'id_auth_tokens_series']);
+        $table->addIndex(['series'], [
+            'unique' => true,
+            'name' => 'id_auth_tokens_series'
+        ]);
+
+        $table->addColumn('token', 'string', [
+            'null' => false
+        ]);
+        $table->addIndex(['token'], [
+            'unique' => false,
+            'name' => 'id_auth_tokens_token'
+        ]);
 
         $table->addColumn('created', 'datetime', [
             'null' => false,
@@ -36,7 +42,10 @@ class CreateAuthTokens extends AbstractMigration
         $table->addColumn('expires', 'datetime', [
             'null' => false,
         ]);
-        $table->addIndex(['expires'], ['unique' => false, 'name' => 'id_auth_tokens_expires']);
+        $table->addIndex(['expires'], [
+            'unique' => false,
+            'name' => 'id_auth_tokens_expires'
+        ]);
 
         /**
          * Edit this part if it doesn't fit to your database.
