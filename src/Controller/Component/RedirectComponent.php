@@ -3,6 +3,8 @@
 namespace Beskhue\CookieTokenAuth\Controller\Component;
 
 use Cake\Controller\Component;
+use Cake\Controller\Component\AuthComponent;
+use Cake\Controller\Controller;
 use Cake\Routing\Router;
 use Cake\Network\Request;
 use Cake\Network\Response;
@@ -11,12 +13,10 @@ use Cake\Network\Response;
  * Redirect component.
  *
  * @property string query_string_redirect
- * @property  controller
+ * @property Controller $controller
  */
 class RedirectComponent extends Component
 {
-    
-    
     public $components = ['Auth'];
 
     /**
