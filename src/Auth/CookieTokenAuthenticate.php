@@ -3,13 +3,20 @@
 namespace Beskhue\CookieTokenAuth\Auth;
 
 use Cake\Auth\BaseAuthenticate;
+use Cake\Controller\ComponentRegistry;
+use Cake\Event\Event;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Auth\DefaultPasswordHasher;
+use Cake\ORM\TableRegistry;
 
+/**
+ * Class CookieTokenAuthenticate
+ * @package Beskhue\CookieTokenAuth\Auth
+ */
 class CookieTokenAuthenticate extends BaseAuthenticate
 {
-    
+
     /**
      * This authenticate class can listen to following events fired by AuthComponent:
      *
@@ -32,10 +39,10 @@ class CookieTokenAuthenticate extends BaseAuthenticate
     /**
      * Constructor
      *
-     * @param \Cake\Controller\ComponentRegistry $registry The Component registry used on this request.
+     * @param ComponentRegistry $registry The Component registry used on this request.
      * @param array $config Array of config to use.
      */
-    public function __construct(\Cake\Controller\ComponentRegistry $registry, array $config = [])
+    public function __construct(ComponentRegistry $registry, array $config = [])
     {
         $this->_defaultConfig = array_merge($this->_defaultConfig, [
             'hash' => 'sha256', // Only for generating tokens -- the token stored in the database is hashed with the DefaultPasswordHasher
@@ -75,7 +82,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
                 // We are minimizing token cookie exposure; redirect the user (once, at the start
                 // of a session, to attempt to log them in using a token cookie).
                 $redirectComponent = $this->_registry->load('Beskhue/CookieTokenAuth.Redirect');
-                
+
                 $controller = $request->getParam('controller');
                 if (!$this->authenticateAttemptedThisSession($request)) {
                     if ($controller === 'CookieTokenAuth') {
@@ -106,9 +113,9 @@ class CookieTokenAuthenticate extends BaseAuthenticate
         }
         return false;
     }
-    
+
     /**
-     * Get whether an authentication (on the CookieTokenAuth page) has been 
+     * Get whether an authentication (on the CookieTokenAuth page) has been
      * attempted this session.
      *
      * @param ServerRequest $request Request to get session from.
@@ -119,9 +126,9 @@ class CookieTokenAuthenticate extends BaseAuthenticate
     public function authenticateAttemptedThisSession(ServerRequest $request)
     {
         $session = $request->session();
-        return (bool) $session->read('CookieTokenAuth.attempted');
+        return (bool)$session->read('CookieTokenAuth.attempted');
     }
-    
+
     /**
      * Set the authenticate attempted session flag.
      *
@@ -155,7 +162,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
     {
         $cookieTokenComponent = $this->_registry->load('Beskhue/CookieTokenAuth.CookieToken', $this->_config);
         $flashComponent = $this->_registry->load('Flash');
-        $authTokens = \Cake\ORM\TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens', $this->_config);
+        $authTokens = TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens', $this->_config);
 
         $authTokens->removeExpired();
 
@@ -188,21 +195,21 @@ class CookieTokenAuthenticate extends BaseAuthenticate
 
         // Generate new token
         $cookieTokenComponent->setCookie($user, $tokenEntity);
-        
+
         return $this->_findUser($user->{$this->_config['fields']['username']});
     }
 
     /**
-     * Called when the user logs out. Remove the token from the database and 
+     * Called when the user logs out. Remove the token from the database and
      * delete the cookie.
-     * 
+     *
      * @param Event $event The logout event.
-     * @param array $user  The user data.
+     * @param array $user The user data.
      */
-    public function logout(\Cake\Event\Event $event, array $user)
+    public function logout(Event $event, array $user)
     {
         $cookieTokenComponent = $this->_registry->load('Beskhue/CookieTokenAuth.CookieToken', $this->_config);
-        $authTokens = \Cake\ORM\TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens', $this->_config);
+        $authTokens = TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens', $this->_config);
 
         // Check if cookie is valid
         if ($this->getUserFromCookieData()) {
@@ -219,32 +226,32 @@ class CookieTokenAuthenticate extends BaseAuthenticate
         // Remove cookie
         $cookieTokenComponent->removeCookie();
     }
-    
+
     /**
      * Called after the user is identified by an authentication adapter.
      * Sets a cookie token if the user was identified by an adapter other
      * than this one (i.e. an adapter that is not CookieTokenAuthenticate).
-     * 
-     * @param \Cake\Event\Event           $event The afterIdentify event.
-     * @param array                       $user  The user data.
-     * @param \Cake\Auth\BaseAuthenticate $auth  The authentication object that identified the user.
+     *
+     * @param Event $event The afterIdentify event.
+     * @param array $user The user data.
+     * @param \Cake\Auth\BaseAuthenticate $auth The authentication object that identified the user.
      */
     public function afterIdentify(Event $event, array $user, BaseAuthenticate $auth)
     {
-        if($auth === $this) {
+        if ($auth === $this) {
             // The user was identified through this authenticator. Don't set a cookie as a
             // new token was already generated and set in $this->getUserFromCookieData.
             return;
         }
-        
+
         $cookieTokenComponent = $this->_registry->load('Beskhue/CookieTokenAuth.CookieToken', $this->_config);
-        
+
         $cookieTokenComponent->setCookie($user);
     }
 
     /**
      * Get and validate the cookie data.
-     * 
+     *
      * @return mixed Either false or an array of cookie token data.
      */
     private function getCookieData()

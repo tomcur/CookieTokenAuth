@@ -4,10 +4,13 @@ namespace Beskhue\CookieTokenAuth\Controller\Component;
 
 use Cake\Controller\Component;
 use Cake\Auth\DefaultPasswordHasher;
+use Cake\ORM\Entity;
+use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 
 /**
  * Cookie token component.
+ * @property Component\CookieComponent Cookie
  */
 class CookieTokenComponent extends Component
 {
@@ -22,23 +25,24 @@ class CookieTokenComponent extends Component
      * same series as in $token), extends the expiration date, saves
      * it, and sends a new cookie to the user's browser.
      *
-     * @param $user  The user data.
-     * @param $token The token to re-use.
+     * @param $user  Entity The user data.
+     * @param $token Entity The token to re-use.
      * @throws \Cake\Core\Exception\Exception
      */
-    public function setCookie($user, $token = null)
+    public function setCookie(Entity $user, Entity $token = null)
     {
-        $authTokens = \Cake\ORM\TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens', $this->_config);
-        
+        $authTokens = TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens', $this->_config);
+
         $expires = new \DateTime();
         $expires->modify($this->getConfig()['cookie']['expires']);
 
-        $series = hash($this->_config['hash'], microtime(true).mt_rand());
-        $t = hash($this->_config['hash'], microtime(true).mt_rand());
+        $series = hash($this->_config['hash'], microtime(true) . mt_rand());
+        $t = hash($this->_config['hash'], microtime(true) . mt_rand());
         $tokenHash = (new DefaultPasswordHasher())->hash($t);
 
 
         if (!$token) {
+            /** @var Entity $token */
             $token = $authTokens->newEntity();
             $token->user_id = $user['id'];
             $token->series = $series;
@@ -75,9 +79,9 @@ class CookieTokenComponent extends Component
     /**
      * Remove a token.
      *
-     * @param $token The token to remove.
+     * @param $token Entity The token to remove.
      */
-    public function removeToken($token)
+    public function removeToken(Entity $token)
     {
         $this->delete($token);
     }
