@@ -55,15 +55,15 @@ class CookieTokenComponent extends Component
             // We are minimizing token cookie exposure, so tell the browser to only send the token cookie
             // on the token cookie authentication page
             $path = Router::url([
-                'plugin' => 'Beskhue/CookieTokenAuth', 
+                'plugin' => 'Beskhue/CookieTokenAuth',
                 'controller' => 'CookieTokenAuth',
-            ]);   
-        } else { 
+            ]);
+        } else {
             // We are not minimizing token cookie exposure, tell the browser to always send the token cookie
             $path = '/';
         }
-        
-        $this->Cookie->config([
+
+        $this->Cookie->setConfig([
             'path' => $path,
             'encryption' => 'aes',
             'expires' => $this->getConfig()['cookie']['expires'],
@@ -94,9 +94,9 @@ class CookieTokenComponent extends Component
      */
     public function removeCookie()
     {
-        $this->Cookie->config([
+        $this->Cookie->setConfig([
             'path' => Router::url([
-                'plugin' => 'Beskhue/CookieTokenAuth', 
+                'plugin' => 'Beskhue/CookieTokenAuth',
                 'controller' => 'CookieTokenAuth',
                 'prefix' => false,
             ]),
