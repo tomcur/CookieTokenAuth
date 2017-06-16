@@ -257,7 +257,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
     private function getCookieData()
     {
         $cookieComponent = $this->_registry->load('Cookie');
-        $data = $cookieComponent->read('userdata');
+        $data = $cookieComponent->read($this->getConfig('cookie.name'));
         if (!$data || !isset($data['series']) || !isset($data['token'])) {
             // Cookie does not exist or is malformed.
             return false;
