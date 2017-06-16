@@ -17,6 +17,27 @@ class CookieTokenComponent extends Component
     public $components = ['Cookie'];
 
     /**
+     * Returns correct path for cookie depending on current config
+     *
+     * @return string
+     */
+    protected function _getCookiePath()
+    {
+        if ($this->_config['minimizeCookieExposure']) {
+            // We are minimizing token cookie exposure, so tell the browser to only send the token cookie
+            // on the token cookie authentication page
+            $path = Router::url([
+                'plugin' => 'Beskhue/CookieTokenAuth',
+                'controller' => 'CookieTokenAuth',
+            ]);
+        } else {
+            // We are not minimizing token cookie exposure, tell the browser to always send the token cookie
+            $path = '/';
+        }
+        return $path;
+    }
+
+    /**
      * Generates a new token cookie.
      * If $token is not given, generates a new series and token hash,
      * saves it, and sends the cookie to the user's browser.
@@ -51,20 +72,8 @@ class CookieTokenComponent extends Component
         $token->token = $tokenHash;
         $token->expires = $expires;
 
-        if ($this->_config['minimizeCookieExposure']) {
-            // We are minimizing token cookie exposure, so tell the browser to only send the token cookie
-            // on the token cookie authentication page
-            $path = Router::url([
-                'plugin' => 'Beskhue/CookieTokenAuth',
-                'controller' => 'CookieTokenAuth',
-            ]);
-        } else {
-            // We are not minimizing token cookie exposure, tell the browser to always send the token cookie
-            $path = '/';
-        }
-
         $this->Cookie->setConfig([
-            'path' => $path,
+            'path' => $this->_getCookiePath(),
             'encryption' => 'aes',
             'expires' => $this->getConfig()['cookie']['expires'],
         ]);
@@ -95,11 +104,7 @@ class CookieTokenComponent extends Component
     public function removeCookie()
     {
         $this->Cookie->setConfig([
-            'path' => Router::url([
-                'plugin' => 'Beskhue/CookieTokenAuth',
-                'controller' => 'CookieTokenAuth',
-                'prefix' => false,
-            ]),
+            'path' => $this->_getCookiePath(),
             'encryption' => 'aes',
             'expires' => '-1 day',
         ]);
