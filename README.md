@@ -98,6 +98,8 @@ The full default configuration is as follows:
 'cookie' => [
     'name' => 'userdata',
     'expires' => '+10 weeks',
+    'encryption' => 'aes',
+    'httpOnly' => true
 ],
 'minimizeCookieExposure' => true,
 'setCookieAfterIdentify' => true,

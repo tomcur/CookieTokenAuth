@@ -49,6 +49,8 @@ class CookieTokenAuthenticate extends BaseAuthenticate
             'cookie' => [
                 'name' => 'userdata',
                 'expires' => '+10 weeks',
+                'encryption' => 'aes',
+                'httpOnly' => true
             ],
             'minimizeCookieExposure' => true,
             /**

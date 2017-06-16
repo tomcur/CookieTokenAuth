@@ -72,12 +72,10 @@ class CookieTokenComponent extends Component
         $token->token = $tokenHash;
         $token->expires = $expires;
 
-        $this->Cookie->setConfig([
-            'path' => $this->_getCookiePath(),
-            'encryption' => 'aes',
-            'expires' => $this->getConfig()['cookie']['expires'],
-        ]);
-        $this->Cookie->write($this->getConfig()['cookie']['name'], [
+        $cookieConfig = $this->getConfig('cookie');
+        $cookieConfig['path'] = $this->_getCookiePath();
+        $this->Cookie->setConfig($cookieConfig);
+        $this->Cookie->write($cookieConfig['name'], [
             'series' => $token->series,
             'token' => $t,
         ]);
@@ -103,11 +101,10 @@ class CookieTokenComponent extends Component
      */
     public function removeCookie()
     {
-        $this->Cookie->setConfig([
-            'path' => $this->_getCookiePath(),
-            'encryption' => 'aes',
-            'expires' => '-1 day',
-        ]);
-        $this->Cookie->write($this->getConfig()['cookie']['name'], []);
+        $config = $this->getConfig('cookie');
+        $config['path'] = $this->_getCookiePath();
+        $config['expires'] = '-1day';
+        $this->Cookie->setConfig($config);
+        $this->Cookie->write($config['name'], []);
     }
 }
