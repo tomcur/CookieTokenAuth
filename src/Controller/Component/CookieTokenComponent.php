@@ -25,11 +25,11 @@ class CookieTokenComponent extends Component
      * same series as in $token), extends the expiration date, saves
      * it, and sends a new cookie to the user's browser.
      *
-     * @param $user  Entity The user data.
+     * @param $userId int|string The user id.
      * @param $token Entity The token to re-use.
      * @throws \Cake\Core\Exception\Exception
      */
-    public function setCookie(Entity $user, Entity $token = null)
+    public function setCookie($userId, Entity $token = null)
     {
         $authTokens = TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens', $this->_config);
 
@@ -44,7 +44,7 @@ class CookieTokenComponent extends Component
         if (!$token) {
             /** @var Entity $token */
             $token = $authTokens->newEntity();
-            $token->user_id = $user['id'];
+            $token->user_id = $userId;
             $token->series = $series;
         }
 

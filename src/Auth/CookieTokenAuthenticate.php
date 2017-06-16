@@ -194,7 +194,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
         }
 
         // Generate new token
-        $cookieTokenComponent->setCookie($user, $tokenEntity);
+        $cookieTokenComponent->setCookie($user->id, $tokenEntity);
 
         return $this->_findUser($user->{$this->_config['fields']['username']});
     }
@@ -246,7 +246,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
 
         $cookieTokenComponent = $this->_registry->load('Beskhue/CookieTokenAuth.CookieToken', $this->_config);
 
-        $cookieTokenComponent->setCookie($user);
+        $cookieTokenComponent->setCookie($user['id']);
     }
 
     /**
