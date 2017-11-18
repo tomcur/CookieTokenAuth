@@ -17,9 +17,9 @@ class CookieTokenComponent extends Component
     public $components = ['Cookie'];
 
     /**
-     * Returns correct path for cookie depending on current config
+     * Returns the cookie path depending on the current config.
      *
-     * @return string
+     * @return string The cookie path.
      */
     protected function _getCookiePath()
     {
