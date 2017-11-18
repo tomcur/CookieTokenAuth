@@ -17,6 +17,27 @@ class CookieTokenComponent extends Component
     public $components = ['Cookie'];
 
     /**
+     * Returns correct path for cookie depending on current config
+     *
+     * @return string
+     */
+    protected function _getCookiePath()
+    {
+        if ($this->_config['minimizeCookieExposure']) {
+            // We are minimizing token cookie exposure, so tell the browser to only send the token cookie
+            // on the token cookie authentication page
+            $path = Router::url([
+                'plugin' => 'Beskhue/CookieTokenAuth',
+                'controller' => 'CookieTokenAuth',
+            ]);
+        } else {
+            // We are not minimizing token cookie exposure, tell the browser to always send the token cookie
+            $path = '/';
+        }
+        return $path;
+    }
+
+    /**
      * Generates a new token cookie.
      * If $token is not given, generates a new series and token hash,
      * saves it, and sends the cookie to the user's browser.
@@ -25,11 +46,11 @@ class CookieTokenComponent extends Component
      * same series as in $token), extends the expiration date, saves
      * it, and sends a new cookie to the user's browser.
      *
-     * @param $user  Entity The user data.
+     * @param $userId int|string The user id.
      * @param $token Entity The token to re-use.
      * @throws \Cake\Core\Exception\Exception
      */
-    public function setCookie(Entity $user, Entity $token = null)
+    public function setCookie($userId, Entity $token = null)
     {
         $authTokens = TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens', $this->_config);
 
@@ -44,31 +65,17 @@ class CookieTokenComponent extends Component
         if (!$token) {
             /** @var Entity $token */
             $token = $authTokens->newEntity();
-            $token->user_id = $user['id'];
+            $token->user_id = $userId;
             $token->series = $series;
         }
 
         $token->token = $tokenHash;
         $token->expires = $expires;
 
-        if ($this->_config['minimizeCookieExposure']) {
-            // We are minimizing token cookie exposure, so tell the browser to only send the token cookie
-            // on the token cookie authentication page
-            $path = Router::url([
-                'plugin' => 'Beskhue/CookieTokenAuth',
-                'controller' => 'CookieTokenAuth',
-            ]);
-        } else {
-            // We are not minimizing token cookie exposure, tell the browser to always send the token cookie
-            $path = '/';
-        }
-
-        $this->Cookie->setConfig([
-            'path' => $path,
-            'encryption' => 'aes',
-            'expires' => $this->getConfig()['cookie']['expires'],
-        ]);
-        $this->Cookie->write($this->getConfig()['cookie']['name'], [
+        $cookieConfig = $this->getConfig('cookie');
+        $cookieConfig['path'] = $this->_getCookiePath();
+        $this->Cookie->setConfig($cookieConfig);
+        $this->Cookie->write($cookieConfig['name'], [
             'series' => $token->series,
             'token' => $t,
         ]);
@@ -94,15 +101,10 @@ class CookieTokenComponent extends Component
      */
     public function removeCookie()
     {
-        $this->Cookie->setConfig([
-            'path' => Router::url([
-                'plugin' => 'Beskhue/CookieTokenAuth',
-                'controller' => 'CookieTokenAuth',
-                'prefix' => false,
-            ]),
-            'encryption' => 'aes',
-            'expires' => '-1 day',
-        ]);
-        $this->Cookie->write($this->getConfig()['cookie']['name'], []);
+        $config = $this->getConfig('cookie');
+        $config['path'] = $this->_getCookiePath();
+        $config['expires'] = '-1day';
+        $this->Cookie->setConfig($config);
+        $this->Cookie->write($config['name'], []);
     }
 }

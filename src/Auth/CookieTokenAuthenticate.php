@@ -49,6 +49,8 @@ class CookieTokenAuthenticate extends BaseAuthenticate
             'cookie' => [
                 'name' => 'userdata',
                 'expires' => '+10 weeks',
+                'encryption' => 'aes',
+                'httpOnly' => true
             ],
             'minimizeCookieExposure' => true,
             /**
@@ -194,7 +196,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
         }
 
         // Generate new token
-        $cookieTokenComponent->setCookie($user, $tokenEntity);
+        $cookieTokenComponent->setCookie($user->id, $tokenEntity);
 
         return $this->_findUser($user->{$this->_config['fields']['username']});
     }
@@ -246,7 +248,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
 
         $cookieTokenComponent = $this->_registry->load('Beskhue/CookieTokenAuth.CookieToken', $this->_config);
 
-        $cookieTokenComponent->setCookie($user);
+        $cookieTokenComponent->setCookie($user['id']);
     }
 
     /**
@@ -257,7 +259,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
     private function getCookieData()
     {
         $cookieComponent = $this->_registry->load('Cookie');
-        $data = $cookieComponent->read('userdata');
+        $data = $cookieComponent->read($this->getConfig('cookie.name'));
         if (!$data || !isset($data['series']) || !isset($data['token'])) {
             // Cookie does not exist or is malformed.
             return false;
