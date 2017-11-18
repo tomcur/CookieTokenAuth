@@ -9,6 +9,7 @@ use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Auth\DefaultPasswordHasher;
 use Cake\ORM\TableRegistry;
+use Beskhue\CookieTokenAuth\Controller\Component\CookieTokenComponent;
 
 /**
  * Class CookieTokenAuthenticate
@@ -68,6 +69,16 @@ class CookieTokenAuthenticate extends BaseAuthenticate
         }
     }
 
+    /**
+     * Get the cookie token component.
+     * 
+     * @return CookieTokenComponent The cookie token component.
+     */
+    public function getCookieTokenComponent()
+    {
+        return $this->_registry->load('Beskhue/CookieTokenAuth.CookieToken', $this->_config);
+    }
+    
     /**
      * Authenticate a user based on the request information.
      *
@@ -162,7 +173,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
      */
     private function getUserFromCookieData()
     {
-        $cookieTokenComponent = $this->_registry->load('Beskhue/CookieTokenAuth.CookieToken', $this->_config);
+        $cookieTokenComponent = $this->getCookieTokenComponent();
         $flashComponent = $this->_registry->load('Flash');
         $authTokens = TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens', $this->_config);
 
@@ -210,7 +221,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
      */
     public function logout(Event $event, array $user)
     {
-        $cookieTokenComponent = $this->_registry->load('Beskhue/CookieTokenAuth.CookieToken', $this->_config);
+        $cookieTokenComponent = $this->getCookieTokenComponent();
         $authTokens = TableRegistry::get('Beskhue/CookieTokenAuth.AuthTokens', $this->_config);
 
         // Check if cookie is valid
@@ -246,7 +257,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
             return;
         }
 
-        $cookieTokenComponent = $this->_registry->load('Beskhue/CookieTokenAuth.CookieToken', $this->_config);
+        $cookieTokenComponent = $getCookieTokenComponent();
 
         $cookieTokenComponent->setCookie($user['id']);
     }
