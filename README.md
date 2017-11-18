@@ -160,11 +160,8 @@ public function login()
          $this->Auth->setUser($user);
          
          if($this->request->getData('remember_me')) {
-            $this->loadComponent(
-                'Beskhue/CookieTokenAuth.CookieToken',
-                $this->Auth->getConfig('authenticate')['Beskhue/CookieTokenAuth.CookieToken']
-            );
-            $this->CookieToken->setCookie($user);
+            $cookieTokenComponent = $this->Auth->getAuthenticate('Beskhue/CookieTokenAuth.CookieToken')->getCookieTokenComponent();
+            $cookieTokenComponent->setCookie($user['id']);
          }
     }
 }
