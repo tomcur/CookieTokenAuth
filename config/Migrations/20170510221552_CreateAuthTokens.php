@@ -49,10 +49,13 @@ class CreateAuthTokens extends AbstractMigration
 
         /**
          * Edit this part if it doesn't fit to your database.
+         * In specific have a look at the data type ('integer'),
+         * and whether it should be signed or unsigned.
          */
         $table
             ->addColumn('user_id', 'integer', [
                 'null' => false,
+                'signed' => false
             ])
             ->addForeignKey('user_id', 'Users', 'id',
                 ['delete' => 'CASCADE', 'update' => 'CASCADE']
