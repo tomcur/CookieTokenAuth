@@ -30,14 +30,14 @@ Place the following in your `composer.json`:
 ```
 
 and run:
-```
+```bash
 php composer.phar update
 ```
 
 ## Database
 Setup the plugin database using [the official migrations plugin for CakePHP](https://github.com/cakephp/migrations).
 
-```
+```bash
 cake migrations migrate -p Beskhue/CookieTokenAuth
 ```
 
@@ -46,18 +46,18 @@ If you have a specific need, such as a different user model, different table nam
 # Usage
 ## Bootstrap
 Place the following in your `config/bootstrap.php` file:
-```
+```php
 Plugin::load('Beskhue/CookieTokenAuth', ['routes' => true]);
 ```
 
 or use bake:
-```
+```bash
 "bin/cake" plugin load --routes Beskhue/CookieTokenAuth
 ```
 
 ## Set up `AuthComponent`
 Update your AuthComponent configuration to use CookieTokenAuth. For example, if you also use the Form authentication to log users in, you could write:
-```
+```php
 $this->loadComponent('Auth', [
     'authenticate' => [
         'Beskhue/CookieTokenAuth.CookieToken',
@@ -68,7 +68,7 @@ $this->loadComponent('Auth', [
 
 If the user model or user fields are named differently than the defaults, you can configure the plugin:
 
-```
+```php
 $this->loadComponent('Auth', [
     'authenticate' => [
         'Beskhue/CookieTokenAuth.CookieToken' => [
@@ -87,7 +87,7 @@ $this->loadComponent('Auth', [
 
 The full default configuration is as follows:
 
-```
+```php
 'fields' => [
     'username' => 'username',
     'password' => 'password',
@@ -112,7 +112,7 @@ If `minimizeCookieExposure` is set to `false`, the client will not be redirected
 ## Validate cookies
 Next, you probably want to validate user authentication of non-logged in users in all controllers (note: authentication is only attempted once per session). This makes sure that a user with a valid token cookie will be logged in. To do that, place something like the following in your `AppController`'s `beforeFilter`. Note that you might also have to make changes to the current identification method you are performing. See the [next section](#create-token-cookies).
 
-```
+```php
 if(!$this->Auth->user())
 {
     $user = $this->Auth->identify();
@@ -131,7 +131,7 @@ When a user logs in with a conventional method (Form, Ldap, etc.) we need to cre
 ### Handle stateless and persistent authentication
 If you want to handle persistent or stateless authentication identification as well, you could do something as follows. This will create a token, add it to the database, and the user's client will receive a cookie for the token. You would probably want to make sure the user is identified only once per session.
 
-```
+```php
 public function identify()
 {
     $user = $this->Auth->user();
@@ -150,7 +150,7 @@ public function identify()
 You might want to create token cookies only in specific cases, such as when a user checked a ``remember me" checkbox. To do this, start by setting the `setCookieAfterIdentify` option to `false` (see the [Configuration](#configuration) section). You will now need to create token cookies manually.
 
 To accomplish this, something like the following could be added to the login action:
-```
+```php
 public function login()
 {
     // ...
@@ -167,7 +167,7 @@ public function login()
 ```
 
 And add the following to your login template:
-```
+```php
 <?= $this->Form->checkbox('remember_me', ['id' => 'remember-me']) ?>
 <?= $this->Form->label('remember_me', __('Remember me')) ?>
 ```
