@@ -128,7 +128,7 @@ In most cases, CookieTokenAuth automatically generates token cookies for you. No
 
 When a user logs in with a conventional method (Form, Ldap, etc.) we need to create a token cookie such that the user can be identified by CookieTokenAuth when they return. CookieTokenAuth automatically handles identification performed by authentication adapters that are *not* persistent and *not* stateless. This means that from the included authentication adapters in CakePHP only `FormAuthenticate` will automatically generate a token cookie. The reason for this is that persistent or stateless identification methods identify the user each request, and would lead to the creation of a new cookie token on each request.
 
-### Handle stateless and persistent authentification
+### Handle stateless and persistent authentication
 If you want to handle persistent or stateless authentication identification as well, you could do something as follows. This will create a token, add it to the database, and the user's client will receive a cookie for the token. You would probably want to make sure the user is identified only once per session.
 
 ```
