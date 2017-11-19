@@ -10,7 +10,7 @@ CookieTokenAuth is more secure than storing a username and (hashed) password in 
 If a session cookie were to be leaked, the user's password hash would be available. There also would be no method of invalidating the session.
 
 ### Control over sessions
-This method is more secure than storing a username and a token in a cookie. Firstly, we now have distinct sessions for different browsers. When the user logs out in one browser, that session can be removed from the database. Secondly, when a session theft is attempted we'd ideally invalidate the users' sessions. Implementing this without series means that a denial of service for specific users can be performed by simply presenting cookies with their username. Here, an attacker would first have to guess the (random) series variable.
+This method is more secure than storing a username and a token in a cookie. Firstly, we now have distinct sessions for different browsers. When the user logs out in one browser, that session can be removed from the database. Secondly, when a session theft is attempted we'd ideally invalidate the user's sessions. Implementing this without series means that a denial of service for specific users can be performed by simply presenting cookies with their username. Here, an attacker would first have to guess the (random) series variable.
 
 ### Tokens are stored securely
 A valid token grants almost as much access as a valid password, and thus it should be treated as one. By storing only token hashes in the database, attackers cannot get access to user accounts when the session database is leaked. 
@@ -144,7 +144,7 @@ public function identify()
 
 
 ### Disable automatic generation of token cookies
-You might want to create token cookies only in specific cases, such as when a user checked a ``remember me" checkbox. To do this, start by setting the `setCookieAfterIdentify` option to `false` (see the [Configuration](#configuration) section). You will now need to create token cookies manually.
+You might want to create token cookies only in specific cases, such as when a user checked a "remember me" checkbox. To do this, start by setting the `setCookieAfterIdentify` option to `false` (see the [Configuration](#configuration) section). You will now need to create token cookies manually.
 
 To accomplish this, something like the following could be added to the login action:
 ```php
@@ -165,6 +165,6 @@ public function login()
 
 And add the following to your login template:
 ```php
-<?= $this->Form->checkbox('remember_me', ['id' => 'remember-me']) ?>
-<?= $this->Form->label('remember_me', __('Remember me')) ?>
+<?= $this->Form->checkbox('remember_me', ['id' => 'remember-me']); ?>
+<?= $this->Form->label('remember_me', __('Remember me')); ?>
 ```
