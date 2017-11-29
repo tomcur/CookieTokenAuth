@@ -100,7 +100,10 @@ The full default configuration is as follows:
     'encryption' => 'aes',
     'httpOnly' => true
 ],
-'minimizeCookieExposure' => true|callback,
+'minimizeCookieExposure' => true,
+'minimizeCookieExposureRedirectCallback' => function(\Cake\Http\ServerRequest $request, \Cake\Http\Response $response) {
+    return true;
+},
 'setCookieAfterIdentify' => true,
 'tokenError' => __('A session token mismatch was detected. You have been logged out.')
 ```
@@ -169,26 +172,50 @@ And add the following to your login template:
 <?= $this->Form->label('remember_me', __('Remember me')); ?>
 ```
 
-### Disable minimize cookie exposure redirection routines via a callback
-You might want to disable the redirection that occurs to minimize cookie exposure for any number of reasons. This can be done with a simple boolean true/false OR we provide the ability to do this via a callback method so you are in complete control of the process.
+### Disable authentication redirection while minimization of cookie exposure is enabled
+You might want to disable the redirection that occurs to minimize cookie exposure for a specific request. This can be done by configuring a callback.
 
-The first step in making this happen is to pass a callable object to `minimizeCookieExposure` during configuration. This may be done in your app_controller or wherever you have defined/loaded your Auth component:
+The callback takes a `Cake\Http\ServerRequest` and a `Cake\Http\Response` as parameters, and should return a boolean indicating whether redirection should be performed. It is called when a redirect has to be performed to attempt to authenticate the user. If the callback returns true, the redirect is performed. If the callback returns false, no redirect is performed this request, and it will be called again next request.
+
+To configure this, pass a callable object to `minimizeCookieExposureRedirectCallback` during configuration:
+
 ```php
 $this->loadComponent('Auth', [
     'authenticate' => [
         'Beskhue/CookieTokenAuth.CookieToken' => [
-				'minimizeCookieExposure' => [$this, 'minimizeCookieExposure']
-        ],
+            'minimizeCookieExposure' => true,
+            'minimizeCookieExposureRedirectCallback' => function (\Cake\Http\ServerRequest $request, \Cake\Http\Response $response) {
+                return !$request->is('ajax');
+            }
+        ]
     ]
 ]);
 ```
 
-The second step is to define a method on the object with the same name that you just passed into the configuration. This method will take two arguments: `ServerRequest $request, Response $response`. Just perform your magic inside this method and make sure to return a boolean value. *True* to continue on with the redirection routine OR *False* to bypass it. In this example the following code was place in my UsersController where login and authentication occurs.
+alternatively, you can provide a named function, e.g. in `AppController`:
+
 ```php
-    public function minimizeCookieExposure(ServerRequest $request, Response $response) {
-        if ($request->is('ajax')) {
-            return false;
-        }
-        return true;
+class AppController extends Controller
+{
+    public function initialize()
+    {
+        /* ... */
+        
+        $this->loadComponent('Auth', [
+            'authenticate' => [
+                'Beskhue/CookieTokenAuth.CookieToken' => [
+                    'minimizeCookieExposure' => true,
+                    'minimizeCookieExposureRedirectCallback' => array($this, 'minimizeCookieExposureRedirect')
+                ]
+            ]
+        ]);
     }
+    
+    public function minimizeCookieExposureRedirect (\Cake\Http\ServerRequest $request, \Cake\Http\Response $response)
+    {
+        return !$request->is('ajax');
+    }
+
+    /* ... */    
+}       
 ```

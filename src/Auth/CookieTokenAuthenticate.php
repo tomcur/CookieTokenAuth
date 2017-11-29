@@ -40,9 +40,9 @@ class CookieTokenAuthenticate extends BaseAuthenticate
     /**
      * Constructor
      *
-     * - `minimizeCookieExposure` - Bool or an object with a callback method called
-     *   minimizeCookieExposure. If a callable method it should return a boolean value,
-     *   true to proceed with the minimize cookie exposure redirection or false to bypass it.
+     * - `minimizeCookieExposureRedirectCallback` - A callable taking request and response paramaters,
+     * and returning a boolean (true to proceed with the minimize cookie exposure redirection, if not
+     * already performed this session, or false to bypass it).
      *
      * @param ComponentRegistry $registry The Component registry used on this request.
      * @param array $config Array of config to use.
@@ -58,6 +58,9 @@ class CookieTokenAuthenticate extends BaseAuthenticate
                 'httpOnly' => true
             ],
             'minimizeCookieExposure' => true,
+            'minimizeCookieExposureRedirectCallback' => function(ServerRequest $request, Response $response) {
+                return true;
+            },
             /**
              * Sometimes the CookieToken should not be set afterIdentify.
              * e.g. : the 'Remember me' use case.
@@ -95,14 +98,11 @@ class CookieTokenAuthenticate extends BaseAuthenticate
     {
         // Only attempt to authenticate once per session
         if (!$this->authenticateAttemptedThisSession($request)) {
-
-            // The minimizeCookieExposure config can be a callback object that returns a bool value to control
-            // whether or not the minimize cookie exposure redirection is performed or not.
-            if (is_callable($this->config('minimizeCookieExposure'))) {
-                $this->config('minimizeCookieExposure', call_user_func($this->config('minimizeCookieExposure'), $request, $response));
-            }
-
-            if ($this->config('minimizeCookieExposure')) {
+            
+            // The minimizeCookieExposureRedirect config is a callable object. It should return
+            // a boolean value to control whether or not the minimize cookie exposure
+            // redirection is performed or not.
+            if ($this->config('minimizeCookieExposure') && $this->config('minimizeCookieExposureRedirectCallback')($request, $response)) {
                 // We are minimizing token cookie exposure; redirect the user (once, at the start
                 // of a session, to attempt to log them in using a token cookie).
                 $redirectComponent = $this->_registry->load('Beskhue/CookieTokenAuth.Redirect');
