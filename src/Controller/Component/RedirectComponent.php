@@ -72,11 +72,13 @@ class RedirectComponent extends Component
 
         $resp = $this->controller->redirect($route);
 
-        // Send the response and stop further processing. This is in part to prevent
-        // authentication failure flash messages from showing. The page will be
-        // processed as per normal when the user is redirected after the token cookie
-        // has been checked.
+        // Check whether $resp is null: this is caused if the application has intercepted
+        // the request (e.g. in beforeRedirect) and stopped event propagation.
         if (!is_null($resp)) {
+            // Send the response and stop further processing. This is in part to prevent
+            // authentication failure flash messages from showing. The page will be
+            // processed as per normal when the user is redirected after the token cookie
+            // has been checked.
             $resp->send();
             $resp->stop();
         }
