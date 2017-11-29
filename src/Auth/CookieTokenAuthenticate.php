@@ -257,7 +257,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
             return;
         }
 
-        $cookieTokenComponent = $cookieTokenComponent = $this->getCookieTokenComponent();
+        $cookieTokenComponent = $this->getCookieTokenComponent();
 
         $cookieTokenComponent->setCookie($user['id']);
     }
