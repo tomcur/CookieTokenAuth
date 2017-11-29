@@ -5,7 +5,6 @@ namespace Beskhue\CookieTokenAuth\Controller\Component;
 use Cake\Controller\Component;
 use Cake\Controller\Component\AuthComponent;
 use Cake\Controller\Controller;
-use Cake\Routing\Router;
 use Cake\Network\Request;
 use Cake\Network\Response;
 
