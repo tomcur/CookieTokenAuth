@@ -177,13 +177,13 @@ The first step in making this happen is to pass a callable object to `minimizeCo
 $this->loadComponent('Auth', [
     'authenticate' => [
         'Beskhue/CookieTokenAuth.CookieToken' => [
-				'minimizeCookieExposure' => $this
+				'minimizeCookieExposure' => [$this, 'minimizeCookieExposure']
         ],
     ]
 ]);
 ```
 
-The second step is to define a `minimizeCookieExposure` method on the object that you just passed into the configuration. This method will take two arguments: `ServerRequest $request, Response $response`. Just perform your magic inside this method and make sure to return a boolean value. *True* to continue on with the redirection routine OR *False* to bypass it. In this example the following code was place in my UsersController where login and authentication occurs:
+The second step is to define a method on the object with the same name that you just passed into the configuration. This method will take two arguments: `ServerRequest $request, Response $response`. Just perform your magic inside this method and make sure to return a boolean value. *True* to continue on with the redirection routine OR *False* to bypass it. In this example the following code was place in my UsersController where login and authentication occurs.
 ```php
     public function minimizeCookieExposure(ServerRequest $request, Response $response) {
         if ($request->is('ajax')) {
