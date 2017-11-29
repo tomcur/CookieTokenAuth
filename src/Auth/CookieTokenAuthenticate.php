@@ -40,6 +40,10 @@ class CookieTokenAuthenticate extends BaseAuthenticate
     /**
      * Constructor
      *
+     * - `minimizeCookieExposure` - Bool or an object with a callback method called
+     *   minimizeCookieExposure. If a callable method it should return a boolean value,
+     *   true to proceed with the minimize cookie exposure redirection or false to bypass it.
+     *
      * @param ComponentRegistry $registry The Component registry used on this request.
      * @param array $config Array of config to use.
      */
@@ -91,7 +95,16 @@ class CookieTokenAuthenticate extends BaseAuthenticate
     {
         // Only attempt to authenticate once per session
         if (!$this->authenticateAttemptedThisSession($request)) {
-            if ($this->_config['minimizeCookieExposure'] && !$request->is('ajax')) {
+
+            // The minimizeCookieExposure config can be a callback object that returns a bool value to control
+            // whether or not the minimize cookie exposure redirection is performed or not.
+            if (is_object($this->config('minimizeCookieExposure')) &&
+                method_exists($this->config('minimizeCookieExposure'), 'minimizeCookieExposure') &&
+                is_callable([$this->config('minimizeCookieExposure'), 'minimizeCookieExposure'])) {
+                $this->config('minimizeCookieExposure', call_user_func([$this->config('minimizeCookieExposure'), 'minimizeCookieExposure'], $request, $response));
+            }
+
+            if ($this->config('minimizeCookieExposure')) {
                 // We are minimizing token cookie exposure; redirect the user (once, at the start
                 // of a session, to attempt to log them in using a token cookie).
                 $redirectComponent = $this->_registry->load('Beskhue/CookieTokenAuth.Redirect');

@@ -100,7 +100,7 @@ The full default configuration is as follows:
     'encryption' => 'aes',
     'httpOnly' => true
 ],
-'minimizeCookieExposure' => true,
+'minimizeCookieExposure' => true|callback,
 'setCookieAfterIdentify' => true,
 'tokenError' => __('A session token mismatch was detected. You have been logged out.')
 ```
@@ -167,4 +167,28 @@ And add the following to your login template:
 ```php
 <?= $this->Form->checkbox('remember_me', ['id' => 'remember-me']); ?>
 <?= $this->Form->label('remember_me', __('Remember me')); ?>
+```
+
+### Disable minimize cookie exposure redirection routines via a callback
+You might want to disable the redirection that occurs to minimize cookie exposure for any number of reasons. This can be done with a simple boolean true/false OR we provide the ability to do this via a callback method so you are in complete control of the process.
+
+The first step in making this happen is to pass a callable object to `minimizeCookieExposure` during configuration. This may be done in your app_controller or wherever you have defined/loaded your Auth component:
+```php
+$this->loadComponent('Auth', [
+    'authenticate' => [
+        'Beskhue/CookieTokenAuth.CookieToken' => [
+				'minimizeCookieExposure' => $this
+        ],
+    ]
+]);
+```
+
+The second step is to define a `minimizeCookieExposure` method on the object that you just passed into the configuration. This method will take two arguments: `ServerRequest $request, Response $response`. Just perform your magic inside this method and make sure to return a boolean value. *True* to continue on with the redirection routine OR *False* to bypass it. In this example the following code was place in my UsersController where login and authentication occurs:
+```php
+    public function minimizeCookieExposure(ServerRequest $request, Response $response) {
+        if ($request->is('ajax')) {
+            return false;
+        }
+        return true;
+    }
 ```
