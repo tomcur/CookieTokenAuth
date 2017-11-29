@@ -77,8 +77,10 @@ class RedirectComponent extends Component
         // authentication failure flash messages from showing. The page will be
         // processed as per normal when the user is redirected after the token cookie
         // has been checked.
-        $resp->send();
-        $resp->stop();
+        if (!is_null($resp)) {
+            $resp->send();
+            $resp->stop();
+        }
     }
     
     /**
