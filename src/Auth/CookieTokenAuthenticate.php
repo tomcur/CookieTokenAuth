@@ -71,14 +71,14 @@ class CookieTokenAuthenticate extends BaseAuthenticate
 
     /**
      * Get the cookie token component.
-     * 
+     *
      * @return CookieTokenComponent The cookie token component.
      */
     public function getCookieTokenComponent()
     {
         return $this->_registry->load('Beskhue/CookieTokenAuth.CookieToken', $this->_config);
     }
-    
+
     /**
      * Authenticate a user based on the request information.
      *
@@ -108,7 +108,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
                             return false;
                         }
                     } else {
-                        // We are attempting to authenticate using the token cookie, but are not 
+                        // We are attempting to authenticate using the token cookie, but are not
                         // on the authentication page. Redirect the user.
                         $redirectComponent->redirectToAuthenticationPage();
                         return false;
@@ -189,7 +189,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
 
         $tokenEntity = $authTokens->findBySeries($series)->contain($this->_config['userModel'])->first();
         if (!$tokenEntity) {
-            // The series was not found. 
+            // The series was not found.
             $cookieTokenComponent->removeCookie();
 
             return false;
@@ -257,7 +257,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
             return;
         }
 
-        $cookieTokenComponent = $getCookieTokenComponent();
+        $cookieTokenComponent = $cookieTokenComponent = $this->getCookieTokenComponent();
 
         $cookieTokenComponent->setCookie($user['id']);
     }
