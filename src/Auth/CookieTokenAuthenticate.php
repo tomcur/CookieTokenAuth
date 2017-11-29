@@ -91,7 +91,7 @@ class CookieTokenAuthenticate extends BaseAuthenticate
     {
         // Only attempt to authenticate once per session
         if (!$this->authenticateAttemptedThisSession($request)) {
-            if ($this->_config['minimizeCookieExposure']) {
+            if ($this->_config['minimizeCookieExposure'] && !$request->is('ajax')) {
                 // We are minimizing token cookie exposure; redirect the user (once, at the start
                 // of a session, to attempt to log them in using a token cookie).
                 $redirectComponent = $this->_registry->load('Beskhue/CookieTokenAuth.Redirect');
